@@ -1,0 +1,38 @@
+{
+  "id": "food-inflation",
+  "topic": "harga",
+  "geographyCode": "6171",
+  "label": "Inflasi makanan, minuman, dan tembakau",
+  "shortDefinition": "Perubahan harga tahunan kelompok makanan, minuman, dan tembakau di Kota Pontianak.",
+  "officialDefinition": "Persentase perubahan IHK kelompok Makanan, Minuman, dan Tembakau bulan Desember terhadap Desember tahun sebelumnya.",
+  "unit": "percent",
+  "frequency": "monthly-with-annual-trend",
+  "trendReference": "december",
+  "precision": 2,
+  "latest": {
+    "periodKey": "2025-12",
+    "periodLabel": "Desember 2025",
+    "value": 2.32,
+    "status": "final"
+  },
+  "trend": [
+    { "periodKey": "2021-12", "periodLabel": "Desember 2021", "value": 0.79, "status": "final" },
+    { "periodKey": "2022-12", "periodLabel": "Desember 2022", "value": 5.43, "status": "final" },
+    { "periodKey": "2023-12", "periodLabel": "Desember 2023", "value": 3.19, "status": "final" },
+    { "periodKey": "2024-12", "periodLabel": "Desember 2024", "value": 3.38, "status": "final" },
+    { "periodKey": "2025-12", "periodLabel": "Desember 2025", "value": 2.32, "status": "final" }
+  ],
+  "movement": {
+    "comparedWith": "2024-12",
+    "comparisonValue": 3.38,
+    "delta": -1.06,
+    "unit": "percentage-point",
+    "label": "Turun 1,06 poin persentase dibanding Desember 2024."
+  },
+  "whyItMatters": "Harga makanan, minuman, dan tembakau berkaitan langsung dengan belanja rutin banyak rumah tangga. Perubahan kelompok ini perlu dibaca bersama kelompok pengeluaran lain, bukan sebagai gambaran seluruh biaya hidup.",
+  "methodologyNote": "Inflasi tahun-ke-tahun kelompok Makanan, Minuman, dan Tembakau dihitung dari IHK Desember Kota Pontianak terhadap Desember tahun sebelumnya; angka ini bukan inflasi seluruh kelompok.",
+  "comparabilityNote": "Nama kelompok dan ukuran laju Desember tahun-ke-tahun konsisten, tetapi mulai Januari 2024 kerangka IHK berubah menjadi 2022=100 disertai perubahan cakupan, pencacahan pasar daring, metode, paket komoditas, dan bobot. Yang dibandingkan adalah laju inflasi resmi, bukan level indeks IHK lintas kerangka.",
+  "sourceIds": ["ihk-pontianak-2021", "ihk-pontianak-2022", "ihk-pontianak-2023", "ihk-pontianak-2025"],
+  "verificationId": "pontianak-v1-2026-08-27",
+  "revision": { "state": "current", "note": null }
+}

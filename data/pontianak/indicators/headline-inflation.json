@@ -1,0 +1,38 @@
+{
+  "id": "headline-inflation",
+  "topic": "harga",
+  "geographyCode": "6171",
+  "label": "Inflasi umum",
+  "shortDefinition": "Perubahan tahunan Indeks Harga Konsumen seluruh kelompok pengeluaran di Kota Pontianak.",
+  "officialDefinition": "Persentase perubahan Indeks Harga Konsumen bulan Desember terhadap Desember tahun sebelumnya untuk gabungan seluruh kelompok pengeluaran.",
+  "unit": "percent",
+  "frequency": "monthly-with-annual-trend",
+  "trendReference": "december",
+  "precision": 2,
+  "latest": {
+    "periodKey": "2025-12",
+    "periodLabel": "Desember 2025",
+    "value": 1.50,
+    "status": "final"
+  },
+  "trend": [
+    { "periodKey": "2021-12", "periodLabel": "Desember 2021", "value": 1.16, "status": "final" },
+    { "periodKey": "2022-12", "periodLabel": "Desember 2022", "value": 6.35, "status": "final" },
+    { "periodKey": "2023-12", "periodLabel": "Desember 2023", "value": 2.09, "status": "final" },
+    { "periodKey": "2024-12", "periodLabel": "Desember 2024", "value": 1.58, "status": "final" },
+    { "periodKey": "2025-12", "periodLabel": "Desember 2025", "value": 1.50, "status": "final" }
+  ],
+  "movement": {
+    "comparedWith": "2024-12",
+    "comparisonValue": 1.58,
+    "delta": -0.08,
+    "unit": "percentage-point",
+    "label": "Turun 0,08 poin persentase dibanding Desember 2024."
+  },
+  "whyItMatters": "Inflasi merangkum perubahan harga rata-rata berbagai barang dan jasa. Angka ini membantu melihat tekanan harga secara luas, tetapi pengalaman setiap rumah tangga dapat berbeda sesuai pola belanjanya.",
+  "methodologyNote": "Inflasi tahun-ke-tahun seluruh kelompok dihitung dari IHK Desember Kota Pontianak terhadap IHK Desember tahun sebelumnya.",
+  "comparabilityNote": "Mulai Januari 2024, kerangka IHK berubah menjadi 2022=100 disertai perubahan cakupan, pencacahan pasar daring, metode, paket komoditas, dan bobot. Deret ini membandingkan laju inflasi Desember tahun-ke-tahun yang dipublikasikan BPS, bukan level indeks IHK lintas kerangka.",
+  "sourceIds": ["ihk-pontianak-2025"],
+  "verificationId": "pontianak-v1-2026-08-27",
+  "revision": { "state": "current", "note": null }
+}

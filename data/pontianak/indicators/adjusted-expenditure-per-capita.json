@@ -1,0 +1,38 @@
+{
+  "id": "adjusted-expenditure-per-capita",
+  "topic": "kesejahteraan",
+  "geographyCode": "6171",
+  "label": "Pengeluaran per kapita yang disesuaikan",
+  "shortDefinition": "Ukuran daya beli per kapita yang disesuaikan untuk dimensi standar hidup layak dalam IPM.",
+  "officialDefinition": "Pengeluaran riil per kapita per tahun yang disesuaikan dengan paritas daya beli sebagai indikator dimensi standar hidup layak dalam penghitungan IPM.",
+  "unit": "thousand-rupiah-ppp-per-person-per-year",
+  "frequency": "annual",
+  "trendReference": "annual",
+  "precision": 0,
+  "latest": {
+    "periodKey": "2025",
+    "periodLabel": "Tahun 2025",
+    "value": 16725,
+    "status": "final"
+  },
+  "trend": [
+    { "periodKey": "2021", "periodLabel": "Tahun 2021", "value": 14610, "status": "final" },
+    { "periodKey": "2022", "periodLabel": "Tahun 2022", "value": 15141, "status": "final" },
+    { "periodKey": "2023", "periodLabel": "Tahun 2023", "value": 15632, "status": "final" },
+    { "periodKey": "2024", "periodLabel": "Tahun 2024", "value": 16212, "status": "final" },
+    { "periodKey": "2025", "periodLabel": "Tahun 2025", "value": 16725, "status": "final" }
+  ],
+  "movement": {
+    "comparedWith": "2024",
+    "comparisonValue": 16212,
+    "delta": 513,
+    "unit": "thousand-rupiah-ppp-per-person-per-year",
+    "label": "Naik 513 ribu rupiah per orang per tahun dibanding 2024."
+  },
+  "whyItMatters": "Pengeluaran per kapita yang disesuaikan adalah ukuran daya beli dalam penghitungan pembangunan manusia. Angka ini bukan pendapatan rumah tangga, gaji, atau uang tunai yang diterima seseorang.",
+  "methodologyNote": "Ukuran daya beli berbasis paritas daya beli (PPP) untuk dimensi standar hidup layak dalam IPM, dinyatakan dalam ribu rupiah per orang per tahun. Ukuran ini bukan pendapatan, gaji, atau uang tunai.",
+  "comparabilityNote": "Kelima pengamatan memakai konstruk pengeluaran per kapita yang disesuaikan, cakupan Kota Pontianak, frekuensi tahunan, dan unit ribu rupiah per orang per tahun yang sama. Titik pada publikasi menggunakan tanda titik sebagai pemisah ribuan Indonesia, sehingga 14.610 dicatat sebagai bilangan bulat 14610, bukan desimal.",
+  "sourceIds": ["adjusted-expenditure-table", "ipm-pontianak-2025"],
+  "verificationId": "pontianak-v1-2026-08-27",
+  "revision": { "state": "current", "note": null }
+}

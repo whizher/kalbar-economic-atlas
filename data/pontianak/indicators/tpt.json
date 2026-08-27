@@ -1,0 +1,38 @@
+{
+  "id": "tpt",
+  "topic": "pekerjaan",
+  "geographyCode": "6171",
+  "label": "Tingkat Pengangguran Terbuka (TPT)",
+  "shortDefinition": "Persentase angkatan kerja yang menganggur.",
+  "officialDefinition": "Persentase jumlah pengangguran terhadap jumlah angkatan kerja.",
+  "unit": "percent",
+  "frequency": "annual",
+  "trendReference": "august",
+  "precision": 2,
+  "latest": {
+    "periodKey": "2025-08",
+    "periodLabel": "Agustus 2025",
+    "value": 7.91,
+    "status": "final"
+  },
+  "trend": [
+    { "periodKey": "2021-08", "periodLabel": "Agustus 2021", "value": 12.38, "status": "final" },
+    { "periodKey": "2022-08", "periodLabel": "Agustus 2022", "value": 9.92, "status": "final" },
+    { "periodKey": "2023-08", "periodLabel": "Agustus 2023", "value": 8.92, "status": "final" },
+    { "periodKey": "2024-08", "periodLabel": "Agustus 2024", "value": 8.29, "status": "final" },
+    { "periodKey": "2025-08", "periodLabel": "Agustus 2025", "value": 7.91, "status": "final" }
+  ],
+  "movement": {
+    "comparedWith": "2024-08",
+    "comparisonValue": 8.29,
+    "delta": -0.38,
+    "unit": "percentage-point",
+    "label": "Turun 0,38 poin persentase dibanding Agustus 2024."
+  },
+  "whyItMatters": "TPT menunjukkan bagian angkatan kerja yang belum bekerja dan sedang mencari atau mempersiapkan pekerjaan. Angka ini tidak mencakup semua bentuk kekurangan pekerjaan atau mutu pekerjaan.",
+  "methodologyNote": "Estimasi Sakernas Agustus untuk Kota Pontianak, berupa persentase pengangguran terhadap angkatan kerja. Rute unduhan resmi publikasi 2025 pernah menyajikan berkas PDF yang berbeda pada tingkat byte/checksum, tetapi kedua salinan memiliki 82 halaman serta tabel, nilai, periode, dan teks yang setara.",
+  "comparabilityNote": "Kelima pengamatan adalah estimasi Agustus tingkat Kota Pontianak. Bahasa pembobotan proyeksi penduduk berubah dari SUPAS 2015 pada buku 2021–2022 menjadi SP2020 pada buku 2025. Bagian 1.3 buku 2022 memuat boilerplate lama ‘Sakernas Agustus 2021’, tetapi judul, Tabel 5, sumber tabel, dan rangkaian tabel 2022 menetapkan periode 2022 sehingga tidak ada konflik nilai.",
+  "sourceIds": ["ketenagakerjaan-pontianak-2021", "ketenagakerjaan-pontianak-2022", "pontianak-dalam-angka-2026", "ketenagakerjaan-pontianak-2025"],
+  "verificationId": "pontianak-v1-2026-08-27",
+  "revision": { "state": "current", "note": null }
+}
