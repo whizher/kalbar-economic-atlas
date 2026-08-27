@@ -143,4 +143,11 @@ describe("verified Pontianak v1 snapshots", () => {
       expect(verificationIds.has(indicator.verificationId)).toBe(true);
     }
   });
+
+  it("preserves the exact IHK 2025 source author metadata", async () => {
+    const atlas = await loadAtlasData();
+    const source = atlas.sources.find(({ id }) => id === "ihk-pontianak-2025");
+
+    expect(source?.author).toBe("Kiki Ananda Rahmayanti and Aulia Hayuningtyas");
+  });
 });
