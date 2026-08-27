@@ -294,9 +294,9 @@ The first release is complete only when:
 9. The production site is smoke-tested after deployment, including navigation, both themes, charts, source links, and JavaScript-disabled core content.
 10. The repository includes the code license, data-use notice, source catalogue, privacy statement, non-affiliation disclaimer, and contribution instructions.
 
-## 14. Initial Official Source Catalogue
+## 14. Approved Official Source Catalogue
 
-All sources below were accessed on 2026-08-27. Indicator data files must record the exact table or page used during extraction.
+All sources below were accessed on 2026-08-27. Indicator data files must record the exact table or page used during extraction. The catalogue was expanded with additional official BPS Kota Pontianak releases after the first six entries could not substantiate all thirty required trend observations; the six-indicator scope and two-pass verification rule did not change.
 
 1. **BPS Kota Pontianak. “Kota Pontianak Dalam Angka 2026.”** Released 2026-02-27. [Direct source](https://pontianakkota.bps.go.id/id/publication/2026/02/27/d3d400239ad6cf7d959c2404/kota-pontianak-dalam-angka-2026.html)
 2. **BPS Kota Pontianak. “Indeks Harga Konsumen Kota Pontianak 2025.”** Released 2026-06-05. [Direct source](https://pontianakkota.bps.go.id/id/publication/2026/06/05/21038398a2694540c254503d/indeks-harga-konsumen-kota-pontianak-2025.html)
@@ -304,6 +304,12 @@ All sources below were accessed on 2026-08-27. Indicator data files must record 
 4. **BPS Kota Pontianak. “Persentase Penduduk Miskin (P0) Menurut Kabupaten/Kota di Provinsi Kalimantan Barat.”** [Direct source](https://pontianakkota.bps.go.id/en/statistics-table/2/NTExIzI=/persentase-penduduk-miskin-p0-menurut-kabupaten-kota-di-provinsi-kalimantan.html)
 5. **BPS Kota Pontianak. “Pengeluaran per Kapita yang Disesuaikan Menurut Kabupaten/Kota di Provinsi Kalimantan Barat.”** [Direct source](https://pontianakkota.bps.go.id/id/statistics-table/2/MzM2IzI=/pengeluaran-per-kapita-yang-disesuaikan-ppp-menurut-kabupaten-kota-provinsi-kalimantan-barat.html)
 6. **BPS Kota Pontianak. “Ketentuan Penggunaan.”** [Direct source](https://pontianakkota.bps.go.id/id/term-of-use)
+7. **BPS Kota Pontianak. “Indeks Harga Konsumen Kota Pontianak 2021.”** Released 2022-03-23. [Direct source](https://pontianakkota.bps.go.id/id/publication/2022/03/23/ba4797ae921daa1695bc088e/indeks-harga-konsumen-kota-pontianak-2021.html)
+8. **BPS Kota Pontianak. “Indeks Harga Konsumen Kota Pontianak 2022.”** Released 2023-03-21. [Direct source](https://pontianakkota.bps.go.id/publication/2023/03/21/80edf8f05ad14ed95c009897/indeks-harga-konsumen-kota-pontianak-2022.html)
+9. **BPS Kota Pontianak. “Indeks Harga Konsumen Kota Pontianak 2023.”** Released 2024-03-21. [Direct source](https://pontianakkota.bps.go.id/id/publication/2024/03/21/c2abcd79687989e691ea338e/indeks-harga-konsumen-kota-pontianak-2023.html)
+10. **BPS Kota Pontianak. “Statistik Ketenagakerjaan Kota Pontianak 2021.”** Released 2022-06-30. [Direct source](https://pontianakkota.bps.go.id/id/publication/2022/06/30/65a137725d28f9e212b449e8/labor-statistics-of-pontianak-municipality-2021.html)
+11. **BPS Kota Pontianak. “Statistik Ketenagakerjaan Kota Pontianak 2022.”** Released 2023-06-27. [Direct source](https://pontianakkota.bps.go.id/id/publication/2023/06/27/d5ba993f14431cb08d4fa2de/statistik-ketenagakerjaan-kota-pontianak-2022.html)
+12. **BPS Kota Pontianak. “Indeks Pembangunan Manusia (IPM) Kota Pontianak Tahun 2025.”** Released 2026-01-23. [Direct source](https://pontianakkota.bps.go.id/id/pressrelease/2026/01/23/1067/indeks-pembangunan-manusia--ipm--kota-pontianak-pada-tahun-2025-mencapai-82-80-poin.html)
 
 ## 15. Design Decisions Summary
 

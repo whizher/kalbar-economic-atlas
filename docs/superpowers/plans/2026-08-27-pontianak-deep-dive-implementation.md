@@ -426,7 +426,7 @@ export const AtlasDataSchema = z.object({
 - Create: `data/pontianak/indicators/adjusted-expenditure-per-capita.json`
 - Create: `tests/data-snapshots.test.ts`
 
-**Interfaces:** Consumes only the six approved BPS source pages and their official document/table links. Produces the sole production data inputs. The browser never reads the BPS pages; later pages consume only `loadAtlasData()` output.
+**Interfaces:** Consumes only the twelve approved BPS source pages below and their official document/table links. Produces the sole production data inputs. The browser never reads the BPS pages; later pages consume only `loadAtlasData()` output.
 
 - [ ] Write `tests/data-snapshots.test.ts` first. Assert the exact six IDs, topic membership `2/2/2`, geography code `6171`, exactly five annual observations per indicator, latest-period labels, complete source joins, verification method `two-pass-manual`, and a nonempty comparability note for every series.
 - [ ] Run `npm test -- tests/data-snapshots.test.ts`. Expected: failure because the data directory is absent.
@@ -436,10 +436,16 @@ export const AtlasDataSchema = z.object({
 | Source ID | Direct catalogue URL | Required use |
 | --- | --- | --- |
 | `pontianak-dalam-angka-2026` | `https://pontianakkota.bps.go.id/id/publication/2026/02/27/d3d400239ad6cf7d959c2404/kota-pontianak-dalam-angka-2026.html` | Cross-check annual welfare and city scope |
+| `ihk-pontianak-2021` | `https://pontianakkota.bps.go.id/id/publication/2022/03/23/ba4797ae921daa1695bc088e/indeks-harga-konsumen-kota-pontianak-2021.html` | December 2021 food-group inflation |
+| `ihk-pontianak-2022` | `https://pontianakkota.bps.go.id/publication/2023/03/21/80edf8f05ad14ed95c009897/indeks-harga-konsumen-kota-pontianak-2022.html` | December 2022 food-group inflation |
+| `ihk-pontianak-2023` | `https://pontianakkota.bps.go.id/id/publication/2024/03/21/c2abcd79687989e691ea338e/indeks-harga-konsumen-kota-pontianak-2023.html` | December 2023 food-group inflation |
 | `ihk-pontianak-2025` | `https://pontianakkota.bps.go.id/id/publication/2026/06/05/21038398a2694540c254503d/indeks-harga-konsumen-kota-pontianak-2025.html` | Headline and food-group inflation |
+| `ketenagakerjaan-pontianak-2021` | `https://pontianakkota.bps.go.id/id/publication/2022/06/30/65a137725d28f9e212b449e8/labor-statistics-of-pontianak-municipality-2021.html` | August 2021 municipal TPT |
+| `ketenagakerjaan-pontianak-2022` | `https://pontianakkota.bps.go.id/id/publication/2023/06/27/d5ba993f14431cb08d4fa2de/statistik-ketenagakerjaan-kota-pontianak-2022.html` | August 2022 municipal TPT |
 | `ketenagakerjaan-pontianak-2025` | `https://pontianakkota.bps.go.id/id/publication/2026/06/26/5cb84d57097179ac93ca2e6a/statistik-ketenagakerjaan-kota-pontianak-2025.html` | August TPT and TPAK |
 | `poverty-p0-table` | `https://pontianakkota.bps.go.id/en/statistics-table/2/NTExIzI=/persentase-penduduk-miskin-p0-menurut-kabupaten-kota-di-provinsi-kalimantan.html` | Annual municipal poverty rate |
 | `adjusted-expenditure-table` | `https://pontianakkota.bps.go.id/id/statistics-table/2/MzM2IzI=/pengeluaran-per-kapita-yang-disesuaikan-ppp-menurut-kabupaten-kota-provinsi-kalimantan-barat.html` | Annual adjusted per-capita expenditure |
+| `ipm-pontianak-2025` | `https://pontianakkota.bps.go.id/id/pressrelease/2026/01/23/1067/indeks-pembangunan-manusia--ipm--kota-pontianak-pada-tahun-2025-mencapai-82-80-poin.html` | Reproducible 2021–2025 municipal adjusted-expenditure series |
 | `bps-terms` | `https://pontianakkota.bps.go.id/id/term-of-use` | Data-use boundary, not an indicator source |
 
 - [ ] Pass one for headline inflation: extract the latest verified all-items year-on-year value and five comparable December year-on-year rates, plus period, unit, table/page, base/classification notes, and revision state.
