@@ -28,7 +28,12 @@ export async function loadAtlasData(root = process.cwd()): Promise<AtlasData> {
   const indicatorsPath = join(base, "indicators");
 
   try {
-    const indicatorNames = (await readdir(indicatorsPath)).sort((left, right) => left.localeCompare(right));
+    let indicatorNames: string[];
+    try {
+      indicatorNames = (await readdir(indicatorsPath)).sort((left, right) => left.localeCompare(right));
+    } catch (error) {
+      throw new DataValidationFailure(indicatorsPath, errorMessage(error));
+    }
     const expectedNames = INDICATOR_IDS.map((id) => `${id}.json`).sort((left, right) => left.localeCompare(right));
     const missing = expectedNames.filter((name) => !indicatorNames.includes(name));
     const extra = indicatorNames.filter((name) => !expectedNames.includes(name));

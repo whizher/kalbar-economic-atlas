@@ -207,6 +207,48 @@ describe("canonical Pontianak atlas data", () => {
     expectInvalidAt(fixture, ["indicators", 0, "sourceIds", 0]);
   });
 
+  it("rejects an indicator with no source attribution", () => {
+    const fixture = literalAtlasFixture();
+    fixture.indicators[0].sourceIds = [];
+
+    expectInvalidAt(fixture, ["indicators", 0, "sourceIds"]);
+  });
+
+  it("rejects an indicator with an empty verification attribution", () => {
+    const fixture = literalAtlasFixture();
+    fixture.indicators[0].verificationId = "";
+
+    expectInvalidAt(fixture, ["indicators", 0, "verificationId"]);
+  });
+
+  it("rejects an indicator with a missing verification attribution", () => {
+    const fixture = literalAtlasFixture();
+    delete (fixture.indicators[0] as { verificationId?: string }).verificationId;
+
+    expectInvalidAt(fixture, ["indicators", 0, "verificationId"]);
+  });
+
+  it("rejects duplicate source record IDs at the duplicate record", () => {
+    const fixture = literalAtlasFixture();
+    fixture.sources.push({ ...fixture.sources[0] });
+
+    expectInvalidAt(fixture, ["sources", 1, "id"]);
+  });
+
+  it("rejects duplicate verification record IDs at the duplicate record", () => {
+    const fixture = literalAtlasFixture();
+    fixture.verifications.push({ ...fixture.verifications[0] });
+
+    expectInvalidAt(fixture, ["verifications", 1, "id"]);
+  });
+
+  it("rejects a duplicate source attribution at the duplicate entry", () => {
+    const fixture = literalAtlasFixture();
+    fixture.indicators[0].sourceIds.push("bps-pontianak-source");
+
+    expectInvalidAt(fixture, ["indicators", 0, "sourceIds", 1]);
+  });
+
   it("rejects a non-Pontianak geography code", () => {
     const fixture = literalAtlasFixture();
     fixture.geography.code = "6172" as never;
@@ -238,6 +280,16 @@ describe("canonical Pontianak atlas data", () => {
 
     await expect(loadAtlasData(root)).rejects.toThrow(
       new RegExp(`Data validation failed at ${escapeRegExp(path)}: .*missing: tpt\\.json`)
+    );
+  });
+
+  it("rejects a missing indicators directory at the indicators path", async () => {
+    const root = await temporaryFixture();
+    const path = join(root, "data", "pontianak", "indicators");
+    await rm(path, { recursive: true });
+
+    await expect(loadAtlasData(root)).rejects.toThrow(
+      new RegExp(`Data validation failed at ${escapeRegExp(path)}:`)
     );
   });
 

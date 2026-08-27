@@ -16,18 +16,18 @@ export const UnitSchema = z.enum(["percent", "thousand-rupiah-ppp-per-person-per
 export const ObservationSchema = z.object({
   periodKey: z.string().regex(/^\d{4}(-\d{2})?$/),
   periodLabel: z.string().min(4),
-  value: z.number().finite(),
+  value: z.number(),
   status: z.enum(["final", "revised"])
 }).strict();
 
 export const SourceSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
   title: z.string().min(1),
-  url: z.string().url().startsWith("https://pontianakkota.bps.go.id/"),
+  url: z.url().startsWith("https://pontianakkota.bps.go.id/"),
   publisher: z.literal("BPS Kota Pontianak"),
   author: z.string().min(1).nullable(),
-  publishedOn: z.string().date().nullable(),
-  accessedOn: z.string().date(),
+  publishedOn: z.iso.date().nullable(),
+  accessedOn: z.iso.date(),
   reference: z.string().min(1),
   checksumSha256: z.string().regex(/^[a-f0-9]{64}$/).nullable(),
   availability: z.enum(["active", "temporarily-unavailable", "withdrawn-review", "withdrawn"])
@@ -42,7 +42,7 @@ export const GeographySchema = z.object({
 
 export const VerificationSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
-  verifiedOn: z.string().date(),
+  verifiedOn: z.iso.date(),
   method: z.literal("two-pass-manual"),
   passCount: z.literal(2),
   checks: z.array(z.enum([
@@ -91,8 +91,8 @@ const IndicatorShape = z.object({
   trend: z.array(ObservationSchema).length(5),
   movement: z.object({
     comparedWith: z.string().regex(/^\d{4}(-\d{2})?$/),
-    comparisonValue: z.number().finite(),
-    delta: z.number().finite(),
+    comparisonValue: z.number(),
+    delta: z.number(),
     unit: z.enum(["percentage-point", "thousand-rupiah-ppp-per-person-per-year"]),
     label: z.string().min(1)
   }).strict(),
@@ -198,8 +198,30 @@ export const AtlasDataSchema = z.object({
   verifications: z.array(VerificationSchema).min(1),
   indicators: z.array(IndicatorSchema).length(6)
 }).strict().superRefine((atlas, context) => {
-  const sourceIds = new Set(atlas.sources.map((source) => source.id));
-  const verificationIds = new Set(atlas.verifications.map((verification) => verification.id));
+  const sourceIds = new Set<string>();
+  atlas.sources.forEach((source, index) => {
+    if (sourceIds.has(source.id)) {
+      context.addIssue({
+        code: "custom",
+        path: ["sources", index, "id"],
+        message: "Source IDs must be unique."
+      });
+    }
+    sourceIds.add(source.id);
+  });
+
+  const verificationIds = new Set<string>();
+  atlas.verifications.forEach((verification, index) => {
+    if (verificationIds.has(verification.id)) {
+      context.addIssue({
+        code: "custom",
+        path: ["verifications", index, "id"],
+        message: "Verification IDs must be unique."
+      });
+    }
+    verificationIds.add(verification.id);
+  });
+
   const catalogueIds = new Set<string>();
 
   atlas.indicators.forEach((indicator, index) => {
@@ -212,7 +234,17 @@ export const AtlasDataSchema = z.object({
     }
     catalogueIds.add(indicator.id);
 
+    const indicatorSourceIds = new Set<string>();
     indicator.sourceIds.forEach((sourceId, sourceIndex) => {
+      if (indicatorSourceIds.has(sourceId)) {
+        context.addIssue({
+          code: "custom",
+          path: ["indicators", index, "sourceIds", sourceIndex],
+          message: "Indicator source IDs must be unique."
+        });
+      }
+      indicatorSourceIds.add(sourceId);
+
       if (!sourceIds.has(sourceId)) {
         context.addIssue({
           code: "custom",
