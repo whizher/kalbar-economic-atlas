@@ -43,6 +43,13 @@ describe("five-observation trend geometry", () => {
     expect(geometry.points.map(({ y }) => y)).toEqual([20, 20, 20, 20, 20]);
   });
 
+  it("uses a neutral summary when a display descriptor is omitted", () => {
+    const geometry = createTrendGeometry(observations([1, 2, 3, 4, 5]));
+
+    expect(geometry.summary)
+      .toBe("Nilai awal 1,0 satuan data, nilai akhir 5,0 satuan data, perubahan absolut 4,0 satuan data.");
+  });
+
   it("summarizes first value, last value, absolute change, and the supplied unit", () => {
     const geometry = createTrendGeometry(
       observations([14_610, 15_141, 15_632, 16_212, 16_725]),

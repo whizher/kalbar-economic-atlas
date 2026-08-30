@@ -50,8 +50,10 @@ function formatNumber(value: number, precision: number): string {
     throw new RangeError("Display precision must be an integer from 0 to 20.");
   }
 
+  const normalizedValue = Object.is(value, -0) ? 0 : value;
+
   return new Intl.NumberFormat("id-ID", {
     minimumFractionDigits: precision,
     maximumFractionDigits: precision
-  }).format(value);
+  }).format(normalizedValue);
 }

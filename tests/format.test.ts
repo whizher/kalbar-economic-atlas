@@ -57,6 +57,10 @@ describe("Indonesian indicator formatting", () => {
       .toBe("+513 ribu rupiah PPP per orang per tahun");
   });
 
+  it("normalizes negative zero before formatting an indicator value", () => {
+    expect(formatIndicatorValue(-0, "percent", 2)).toBe("0,00%");
+  });
+
   it.each([
     { periodKey: "2025-12", referenceMonth: "december" as const, expected: "Desember 2025" },
     { periodKey: "2025-08", referenceMonth: "august" as const, expected: "Agustus 2025" },
