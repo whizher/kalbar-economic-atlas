@@ -1,0 +1,24 @@
+---
+import SiteShell from "../layouts/SiteShell.astro";
+import { SITE, withBase } from "../config/site";
+---
+<SiteShell title="Tentang Atlas Ekonomi Pontianak" description="Tujuan, batas cakupan, privasi, kontribusi, dan lisensi Atlas Ekonomi Pontianak." currentPath="/tentang/">
+  <header class="hero container">
+    <nav aria-label="Jejak halaman"><a href={withBase("/")}>Beranda</a> / Tentang</nav>
+    <p class="eyebrow">Tentang proyek</p>
+    <h1>Tentang Atlas Ekonomi Pontianak</h1>
+    <p class="lead">Atlas ini menjelaskan perubahan harga, pekerjaan, dan kesejahteraan dengan data resmi serta sumber dan batas pembacaannya.</p>
+  </header>
+  <div class="container about-content">
+    <section aria-labelledby="cakupan"><h2 id="cakupan">Cakupan v1</h2><p>Versi v1 hanya menampilkan enam indikator Kota Pontianak. Perbandingan daerah lain belum tersedia karena setiap daerah memerlukan data dan verifikasi lengkap tersendiri. <a href={withBase("/data-metodologi/")}>Baca metodologi dan katalog sumber</a>.</p></section>
+    <section aria-labelledby="independensi"><h2 id="independensi">Independensi</h2><p>Atlas Ekonomi Pontianak adalah proyek independen dan tidak berafiliasi dengan atau didukung oleh BPS maupun Pemerintah Kota Pontianak. Proyek ini tidak dioperasikan atau disponsori oleh lembaga tersebut.</p></section>
+    <section aria-labelledby="privasi"><h2 id="privasi">Privasi</h2><p>Kode proyek tidak mengumpulkan data pribadi: tanpa akun, cookie, analitik, atau pelacakan. Tidak ada iklan, formulir, maupun permintaan eksternal yang dipicu oleh kode situs saat dibuka. Hanya pilihan tema yang disimpan pada perangkat Anda melalui penyimpanan lokal browser. Situs statis ini dihosting oleh GitHub Pages; penyedia hosting dapat memproses data teknis permintaan sesuai kebijakannya sendiri.</p></section>
+    <section aria-labelledby="kontribusi"><h2 id="kontribusi">Berkontribusi</h2><p>Perbaikan aksesibilitas, bahasa, kode, dan data terverifikasi dapat diajukan melalui repositori. Baca <a href={`${SITE.repository}/blob/main/CONTRIBUTING.md`}>panduan kontribusi</a> untuk proses verifikasi dua tahap dan tinjauan perubahan.</p></section>
+    <section aria-labelledby="lisensi"><h2 id="lisensi">Lisensi kode dan data</h2><p>Lisensi MIT berlaku untuk kode asli proyek; data BPS dan materi sumber tidak dilisensikan ulang di bawah MIT. Lihat <a href={`${SITE.repository}/blob/main/LICENSE`}>lisensi kode</a>, <a href={`${SITE.repository}/blob/main/DATA_USE.md`}>ketentuan penggunaan data</a>, serta <a href="https://pontianakkota.bps.go.id/id/term-of-use">ketentuan BPS</a>.</p></section>
+  </div>
+</SiteShell>
+<style>
+  .about-content { display: grid; gap: 1rem; padding-bottom: 4rem; }
+  .about-content section { max-width: 72ch; border: 1px solid var(--border); border-radius: .8rem; background: var(--surface); padding: 1.5rem; }
+  .about-content h2 { margin-top: 0; color: var(--navy); }
+</style>

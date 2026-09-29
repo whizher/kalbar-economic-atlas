@@ -1,0 +1,88 @@
+---
+import SiteShell from "../layouts/SiteShell.astro";
+import { withBase } from "../config/site";
+import { loadAtlasData } from "../data/load";
+
+const atlas = await loadAtlasData();
+const availabilityLabels = {
+  active: "Tersedia",
+  "temporarily-unavailable": "Sementara tidak dapat diakses; periksa manual",
+  "withdrawn-review": "Penarikan sedang ditinjau",
+  withdrawn: "Ditarik"
+} as const;
+---
+<SiteShell title="Data & metodologi" description="Definisi, periode, validasi, katalog sumber BPS, dan unduhan data terverifikasi Kota Pontianak." currentPath="/data-metodologi/">
+  <header class="hero container">
+    <nav aria-label="Jejak halaman"><a href={withBase("/")}>Beranda</a> / Data & metodologi</nav>
+    <p class="eyebrow">Jejak data · Kota Pontianak</p>
+    <h1>Data & metodologi</h1>
+    <p class="lead">Enam indikator untuk Kota Pontianak (kode 6171), disertai definisi, periode, pemeriksaan, batas keterbandingan, dan sumber resmi.</p>
+  </header>
+  <div class="container transparency-content">
+    <aside class="methodology-callout" aria-label="Batas lisensi data">
+      <h2>Data BPS tidak dilisensikan ulang di bawah MIT</h2>
+      <p>MIT berlaku hanya untuk kode asli proyek. Nilai turunan BPS dan materi sumber mengikuti <a href="https://pontianakkota.bps.go.id/id/term-of-use">ketentuan penggunaan BPS</a>. Baca juga <a href="https://github.com/whizher/kalbar-economic-atlas/blob/main/DATA_USE.md">panduan penggunaan data</a>.</p>
+    </aside>
+    <section aria-labelledby="definisi">
+      <h2 id="definisi">Definisi enam indikator</h2>
+      <div class="definition-grid">
+        {atlas.indicators.map((indicator) => (
+          <article class="detail-card" data-definition>
+            <h3>{indicator.label}</h3>
+            <p>{indicator.officialDefinition}</p>
+            <p><strong>Periode terbaru:</strong> {indicator.latest.periodLabel}; <strong>satuan:</strong> {indicator.unit === "percent" ? "persen" : "ribu rupiah PPP per orang per tahun"}.</p>
+            <p><strong>Metode:</strong> {indicator.methodologyNote}</p>
+            <p><strong>Keterbandingan:</strong> {indicator.comparabilityNote}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+    <section aria-labelledby="periode">
+      <h2 id="periode">Periode dan keterbandingan</h2>
+      <p>“Terbaru” adalah nilai resmi paling baru yang telah diverifikasi untuk masing-masing indikator, bukan tanggal bersama. Tren berisi lima pengamatan tahunan yang sebanding; celah tidak diisi dengan interpolasi.</p>
+      <p>Inflasi adalah laju year-on-year Desember, bukan deret tingkat IHK yang disambungkan melintasi pergantian tahun dasar, bobot, atau klasifikasi. TPT dan TPAK memakai estimasi Sakernas Agustus Kota Pontianak, bukan estimasi Februari atau provinsi. Kemiskinan dan pengeluaran disesuaikan memakai estimasi tahunan kota. Pengeluaran PPP bukan pendapatan rumah tangga atau uang tunai.</p>
+    </section>
+    <section aria-labelledby="verifikasi">
+      <h2 id="verifikasi">Ekstraksi dan verifikasi dua tahap</h2>
+      <p>Lintasan pertama mencatat nilai, periode, satuan, cakupan kota, rujukan tabel/halaman, dan catatan metode langsung dari sumber BPS. Lintasan kedua secara independen membaca ulang tiap nilai dan rujukannya. Validasi skema, rentang, kelengkapan, urutan periode, serta keterbandingan dijalankan sebelum build. Validasi otomatis tidak membuktikan kebenaran transkripsi sehingga pemeriksaan manual dua lintasan tetap wajib.</p>
+      <ul>
+        {atlas.verifications.map((record) => <li>Catatan {record.id}: {record.verifiedOn}, {record.passCount} lintasan; pemeriksaan {record.checks.join(", ")}.</li>)}
+      </ul>
+    </section>
+    <section aria-labelledby="unduhan">
+      <h2 id="unduhan">Unduh data JSON</h2>
+      <p><a href={withBase("/data/pontianak/indicators.json")}>Unduh indikator JSON</a> berisi <code>geography</code>, <code>verifications</code>, dan <code>indicators</code> (enam indikator dengan lima pengamatan tren masing-masing). <a href={withBase("/data/pontianak/sources.json")}>Unduh sumber JSON</a> berisi katalog sumber dengan ID yang dirujuk oleh <code>sourceIds</code>. Keduanya adalah snapshot statis UTF-8 tervalidasi saat build; tidak ada pengambilan sumber pada saat halaman dibuka.</p>
+    </section>
+    <section aria-labelledby="revisi">
+      <h2 id="revisi">Riwayat revisi dan penarikan</h2>
+      <p>Snapshot awal diverifikasi pada {atlas.verifications[0]?.verifiedOn}. Status tiap indikator dicatat di bidang <code>revision</code>; catatan revisi tersedia bila ada perubahan yang dinyatakan. Saat ini tidak ada revisi tambahan yang tercatat pada snapshot ini. Perubahan mendatang memerlukan diff data dan rujukan sumber dalam pull request yang ditinjau; riwayat Git menyimpan jejak perubahannya.</p>
+      <p>Kegagalan akses sementara atau pembatasan laju permintaan meminta tinjauan manual, bukan penghapusan otomatis. Jika BPS mengonfirmasi penarikan konten, data terdampak diperbarui atau dihapus lewat pull request yang ditinjau. Pengubahan riwayat repositori yang secara khusus diperlukan memerlukan persetujuan pemilik dan rencana pemulihan.</p>
+      <p>Status sumber: tersedia (<code>active</code>), sementara tidak dapat diakses (<code>temporarily-unavailable</code>), sedang ditinjau karena penarikan (<code>withdrawn-review</code>), dan ditarik (<code>withdrawn</code>).</p>
+    </section>
+    <section aria-labelledby="katalog">
+      <h2 id="katalog">Katalog sumber</h2>
+      <p>Setiap rujukan mempertahankan judul, penerbit, penulis bila tercantum, tanggal akses, dan lokasi tabel atau halaman yang tepat. Tautan berikut menuju halaman asli BPS.</p>
+      <ol class="source-catalogue">
+        {atlas.sources.map((source) => (
+          <li class="detail-card" data-source-record>
+            <h3>{source.title}</h3>
+            <p>{source.publisher} · Penulis: {source.author ?? "tidak tercantum"} · Terbit: {source.publishedOn ?? "tidak tercantum"} · Diakses: {source.accessedOn}</p>
+            <p><strong>Tabel/halaman:</strong> {source.reference}</p>
+            <p><strong>Status:</strong> {availabilityLabels[source.availability]}</p>
+            <a href={source.url}>Sumber resmi BPS: {source.title}</a>
+          </li>
+        ))}
+      </ol>
+    </section>
+  </div>
+</SiteShell>
+<style>
+  .transparency-content { padding-bottom: 4rem; }
+  .transparency-content > section { margin-block: 3rem; max-width: 76rem; }
+  .transparency-content > section > p { max-width: 72ch; }
+  .definition-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+  .detail-card { border: 1px solid var(--border); border-radius: .8rem; background: var(--surface); padding: 1.25rem; overflow-wrap: anywhere; }
+  .detail-card h3 { margin-top: 0; color: var(--navy); }
+  .source-catalogue { display: grid; gap: 1rem; padding-left: 1.5rem; }
+  .source-catalogue li { padding-left: 1.5rem; }
+</style>

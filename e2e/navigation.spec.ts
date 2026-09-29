@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 import { PUBLIC_ROUTES } from "./routes";
 
 test("home exposes Indonesian landmarks, skip link, and project-bound navigation", async ({ page, isMobile, baseURL }) => {
@@ -133,3 +134,58 @@ test("employment uses August observations without substituting February", async 
   await page.goto("pekerjaan/");
   await expect(page.locator("main")).not.toContainText(/Februari/i);
 });
+
+test("methodology explains definitions, provenance, verification, availability, and downloads", async ({ page, baseURL }) => {
+  const response = await page.goto("data-metodologi/");
+  expect(response?.status()).toBe(200);
+  await expect(page.getByRole("heading", { level: 1, name: PUBLIC_ROUTES[4].heading })).toBeVisible();
+  await expect(page.locator("main [data-definition]")).toHaveCount(6);
+  await expect(page.getByText("Data BPS tidak dilisensikan ulang di bawah MIT")).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Riwayat revisi/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Katalog sumber/i })).toBeVisible();
+  await expect(page.locator("main [data-source-record]")).toHaveCount(12);
+  await expect(page.getByRole("link", { name: /Unduh indikator/i })).toHaveAttribute("href", new URL("data/pontianak/indicators.json", baseURL).pathname);
+  await expect(page.getByRole("link", { name: /Unduh sumber/i })).toHaveAttribute("href", new URL("data/pontianak/sources.json", baseURL).pathname);
+  await expect(page.getByText(/dua tahap|dua lintasan/i).first()).toBeVisible();
+  await expect(page.getByText(/penarikan/i).first()).toBeVisible();
+});
+
+test("about states project scope, privacy, independence, and licensing", async ({ page }) => {
+  const response = await page.goto("tentang/");
+  expect(response?.status()).toBe(200);
+  await expect(page.getByRole("heading", { level: 1, name: PUBLIC_ROUTES[5].heading })).toBeVisible();
+  await expect(page.locator("main")).toContainText(/v1.*Kota Pontianak/i);
+  await expect(page.locator("main")).toContainText(/independen.*tidak (berafiliasi|didukung)/i);
+  await expect(page.locator("main")).toContainText(/GitHub Pages/);
+  await expect(page.locator("main")).toContainText(/tanpa akun, cookie, analitik, atau pelacakan/i);
+  await expect(page.locator("main")).toContainText(/pilihan tema.*disimpan/i);
+  await expect(page.locator("main")).toContainText(/MIT.*kode.*data BPS/i);
+  await expect(page.getByRole("link", { name: /panduan kontribusi/i })).toHaveAttribute("href", new URL("CONTRIBUTING.md", "https://github.com/whizher/kalbar-economic-atlas/blob/main/").href);
+});
+
+test("generated 404 page gives a route home without a search form", async ({ page, baseURL }) => {
+  // Static test server returns its own 404 for unknown paths, so inspect the generated artifact.
+  const response = await page.goto("404.html");
+  expect(response?.status()).toBe(200);
+  await expect(page.getByRole("heading", { level: 1, name: /halaman tidak ditemukan/i })).toBeVisible();
+  await expect(page.getByRole("link", { name: /kembali ke beranda/i })).toHaveAttribute("href", new URL("./", baseURL).pathname);
+  await expect(page.getByRole("searchbox")).toHaveCount(0);
+  await expect(page.locator("form")).toHaveCount(0);
+});
+
+for (const path of ["data-metodologi/", "tentang/", "404.html"]) {
+  test(`${path} stays readable on small screens and supports keyboard and semantic navigation`, async ({ page }) => {
+    await page.goto(path);
+    await page.keyboard.press("Tab");
+    await expect(page.getByRole("link", { name: /lewati.*konten/i })).toBeFocused();
+    await page.keyboard.press("Enter");
+    await expect(page.getByRole("main")).toBeFocused();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+    for (const width of [375, 768, 1280]) {
+      await page.setViewportSize({ width, height: 900 });
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+    }
+    const audit = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+    expect(audit.violations).toEqual([]);
+  });
+}
