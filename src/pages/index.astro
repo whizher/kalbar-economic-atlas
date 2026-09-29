@@ -1,0 +1,11 @@
+---
+import SiteShell from "../layouts/SiteShell.astro";
+import { SITE } from "../config/site";
+---
+<SiteShell title={SITE.title} description={SITE.description} currentPath="/">
+  <section class="hero container" aria-labelledby="home-title">
+    <p class="eyebrow">Data resmi · Kota Pontianak</p>
+    <h1 id="home-title">Ekonomi Pontianak, dijelaskan dengan jernih.</h1>
+    <p class="lead">Lihat perubahan harga, pekerjaan, dan kesejahteraan melalui data resmi terbaru dan tren tahunan yang dapat dibandingkan.</p>
+  </section>
+</SiteShell>
