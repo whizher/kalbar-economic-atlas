@@ -96,3 +96,40 @@ test("every home chart names its SVG and matches five table rows and point label
     expect(labels).toEqual(cells.map(([period, value]) => `${period}: ${value}`));
   }
 });
+
+for (const { path, heading, labels, interpretation } of [
+  { path: "harga/", heading: PUBLIC_ROUTES[1].heading, labels: ["Inflasi umum", "Inflasi makanan, minuman, dan tembakau"], interpretation: [/year-on-year/i, /tingkat indeks dari dasar yang berbeda tidak disambungkan/i] },
+  { path: "pekerjaan/", heading: PUBLIC_ROUTES[2].heading, labels: ["Tingkat Pengangguran Terbuka (TPT)", "Tingkat Partisipasi Angkatan Kerja (TPAK)"], interpretation: [/Sakernas Agustus/i] },
+  { path: "kesejahteraan/", heading: PUBLIC_ROUTES[3].heading, labels: ["Persentase penduduk miskin (P0)", "Pengeluaran per kapita yang disesuaikan"], interpretation: [/Pengeluaran per kapita yang disesuaikan bukan pendapatan, gaji, atau uang tunai yang diterima rumah tangga/i] }
+]) {
+  test(`${path} explains both indicators with comparable trends and sources`, async ({ page, baseURL }) => {
+    const response = await page.goto(path);
+    expect(response?.status()).toBe(200);
+    await expect(page).toHaveURL(new URL(path, baseURL).href);
+    await expect(page.getByRole("heading", { level: 1, name: heading })).toBeVisible();
+    await expect(page.getByRole("link", { name: /Beranda/i }).first()).toHaveAttribute("href", new URL("./", baseURL).pathname);
+
+    const indicators = page.locator("main [data-topic-indicator]");
+    await expect(indicators).toHaveCount(2);
+    expect(await indicators.locator("[data-indicator-card] h3").allTextContents()).toEqual(labels);
+    await expect(page.locator("main [data-indicator-card]")).toHaveCount(2);
+    await expect(page.locator("main [data-trend-chart] tbody tr")).toHaveCount(10);
+    for (const indicator of await indicators.all()) {
+      await expect(indicator.locator("[data-indicator-card]")).toHaveCount(1);
+      await expect(indicator.locator("[data-trend-chart] tbody tr")).toHaveCount(5);
+      await expect(indicator.locator(".why-it-matters")).toHaveCount(1);
+      const sources = indicator.locator(".source-panel a[href^='https://pontianakkota.bps.go.id/']");
+      expect(await sources.count()).toBeGreaterThan(0);
+      const order = await indicator.locator("[data-indicator-card], [data-trend-chart], .why-it-matters, .source-panel")
+        .evaluateAll((elements) => elements.map((element) => element.hasAttribute("data-indicator-card") ? "card" : element.hasAttribute("data-trend-chart") ? "chart" : element.classList.contains("why-it-matters") ? "context" : "source"));
+      expect(order).toEqual(["card", "chart", "context", "source"]);
+    }
+    await expect(page.getByRole("heading", { name: /Batasan/i })).toBeVisible();
+    for (const phrase of interpretation) await expect(page.getByText(phrase).first()).toBeVisible();
+  });
+}
+
+test("employment uses August observations without substituting February", async ({ page }) => {
+  await page.goto("pekerjaan/");
+  await expect(page.locator("main")).not.toContainText(/Februari/i);
+});

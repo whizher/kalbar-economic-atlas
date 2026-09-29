@@ -1,0 +1,44 @@
+---
+import SiteShell from "../layouts/SiteShell.astro";
+import { withBase } from "../config/site";
+import { loadAtlasData } from "../data/load";
+import IndicatorCard from "../components/IndicatorCard.astro";
+import TrendChart from "../components/TrendChart.astro";
+import WhyItMatters from "../components/WhyItMatters.astro";
+import SourcePanel from "../components/SourcePanel.astro";
+
+const atlas = await loadAtlasData();
+const ids = ["headline-inflation", "food-inflation"];
+const indicators = ids.map((id) => atlas.indicators.find((indicator) => indicator.id === id));
+if (indicators.some((indicator) => !indicator)) throw new Error("Harga requires both verified indicators.");
+---
+<SiteShell title="Harga di Pontianak" description="Inflasi umum dan kelompok makanan, minuman, dan tembakau di Kota Pontianak." currentPath="/harga/">
+  <header class="hero container">
+    <nav aria-label="Jejak halaman"><a href={withBase("/")}>Beranda</a> / Harga</nav>
+    <p class="eyebrow">Harga · Kota Pontianak</p>
+    <h1>Harga di Pontianak</h1>
+    <p class="lead">Inflasi year-on-year membandingkan tingkat harga dengan bulan yang sama setahun sebelumnya. Tren tahunan di bawah memakai laju year-on-year bulan Desember agar titik tiap tahun memiliki bulan acuan yang sama.</p>
+  </header>
+  <section class="container topic-summary" aria-labelledby="harga-indikator">
+    <div class="topic-intro">
+      <h2 id="harga-indikator">Dua ukuran perubahan harga</h2>
+      <p>Inflasi umum mencakup seluruh kelompok pengeluaran. Inflasi makanan, minuman, dan tembakau menunjukkan perubahan harga kelompok tersebut; keduanya punya cakupan berbeda.</p>
+    </div>
+    <div class="topic-indicators">
+      {indicators.map((indicator) => indicator && (
+        <section class="indicator-overview" data-topic-indicator aria-label={indicator.label}>
+          <IndicatorCard indicator={indicator} />
+          <TrendChart indicator={indicator} />
+          <WhyItMatters indicator={indicator} />
+          <SourcePanel indicator={indicator} sources={atlas.sources.filter((source) => indicator.sourceIds.includes(source.id))} />
+        </section>
+      ))}
+    </div>
+  </section>
+  <section class="container methodology-callout" aria-labelledby="harga-batasan">
+    <h2 id="harga-batasan">Metode dan batasan pembacaan</h2>
+    <p>Angka ini adalah laju perubahan harga, bukan tingkat harga atau biaya hidup tiap rumah tangga. Perubahan indeks, bobot, atau klasifikasi dicatat; tingkat indeks dari dasar yang berbeda tidak disambungkan.</p>
+    <p>Perubahan dasar IHK dapat memengaruhi keterbandingan rinci kelompok barang. Catatan keterbandingan dan rujukan resmi tersedia pada setiap indikator.</p>
+    <a href={withBase("/")}>Kembali ke ringkasan Harga di Beranda</a>
+  </section>
+</SiteShell>
