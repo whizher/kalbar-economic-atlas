@@ -1,0 +1,9 @@
+---
+import type { Indicator } from "../data/schema";
+interface Props { indicator: Indicator }
+const { indicator } = Astro.props;
+---
+<aside class="why-it-matters" aria-label={`Mengapa ${indicator.label} penting`}>
+  <h4>Mengapa ini penting?</h4>
+  <p>{indicator.whyItMatters}</p>
+</aside>

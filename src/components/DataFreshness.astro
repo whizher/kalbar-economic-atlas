@@ -1,0 +1,6 @@
+---
+import type { Indicator } from "../data/schema";
+interface Props { indicator: Indicator }
+const { indicator } = Astro.props;
+---
+<p class="data-freshness">Data terbaru yang tersedia untuk indikator ini: <time datetime={indicator.latest.periodKey}>{indicator.latest.periodLabel}</time></p>

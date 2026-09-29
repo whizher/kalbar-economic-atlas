@@ -1,6 +1,11 @@
 ---
 import SiteShell from "../layouts/SiteShell.astro";
-import { SITE } from "../config/site";
+import { SITE, withBase } from "../config/site";
+import { loadAtlasData } from "../data/load";
+import { TOPICS } from "../content/topics";
+import TopicSummaryCard from "../components/TopicSummaryCard.astro";
+const atlas = await loadAtlasData();
+const topics = Object.keys(TOPICS) as (keyof typeof TOPICS)[];
 ---
 <SiteShell title={SITE.title} description={SITE.description} currentPath="/">
   <section class="hero container" aria-labelledby="home-title">
@@ -8,4 +13,14 @@ import { SITE } from "../config/site";
     <h1 id="home-title">Ekonomi Pontianak, dijelaskan dengan jernih.</h1>
     <p class="lead">Lihat perubahan harga, pekerjaan, dan kesejahteraan melalui data resmi terbaru dan tren tahunan yang dapat dibandingkan.</p>
   </section>
+  <div class="container home-topics">
+    {topics.map((topic) => (
+      <TopicSummaryCard topic={topic} indicators={atlas.indicators.filter((indicator) => indicator.topic === topic)} sources={atlas.sources} />
+    ))}
+  </div>
+  <aside class="container methodology-callout" data-methodology-callout>
+    <h2>Membaca data dengan tepat</h2>
+    <p>Tanggal pelaporan berbeda untuk setiap indikator. Periode terbaru dan lima pengamatan yang dapat dibandingkan ditampilkan masing-masing, tanpa menyamakan waktu terbit yang berlainan.</p>
+    <a href={withBase("/data-metodologi/")}>Baca data dan metodologi</a>
+  </aside>
 </SiteShell>

@@ -1,0 +1,18 @@
+---
+import { formatIndicatorValue } from "../data/format";
+import type { Indicator } from "../data/schema";
+import { withBase } from "../config/site";
+import { TOPICS } from "../content/topics";
+import DataFreshness from "./DataFreshness.astro";
+interface Props { indicator: Indicator }
+const { indicator } = Astro.props;
+---
+<article class="indicator-card" data-indicator-card>
+  <h3>{indicator.label}</h3>
+  <p class="indicator-value" data-latest-value>{formatIndicatorValue(indicator.latest.value, indicator.unit, indicator.precision)}</p>
+  <p>Periode terbaru: <time datetime={indicator.latest.periodKey}>{indicator.latest.periodLabel}</time></p>
+  <p class="indicator-unit">Satuan resmi: {indicator.unit === "percent" ? "persen (%)" : "ribu rupiah PPP per orang per tahun"}</p>
+  <p>{indicator.movement.label}</p>
+  <DataFreshness indicator={indicator} />
+  <a href={withBase(TOPICS[indicator.topic].href)}>Penjelasan {indicator.label} di {TOPICS[indicator.topic].title}</a>
+</article>

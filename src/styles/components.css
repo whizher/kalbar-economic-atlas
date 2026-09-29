@@ -32,3 +32,50 @@ h1 { max-width: 19ch; font-size: clamp(2.4rem, 6vw, 5rem); line-height: 1.1; let
   .header-inner { flex-wrap: wrap; }
   .mobile-menu[open] { width: 100%; margin-left: 0; order: 2; }
 }
+.home-topics { display: grid; gap: 2rem; padding-bottom: 3rem; }
+.topic-summary { background: var(--surface); border: 1px solid var(--border); border-radius: 1.2rem; overflow: hidden; }
+.topic-intro { padding: clamp(1.4rem, 3vw, 2.5rem); background: var(--raised); border-bottom: 1px solid var(--border); }
+.topic-intro h2 { margin: .25rem 0 .6rem; color: var(--navy); font-size: clamp(1.8rem, 3vw, 2.5rem); line-height: 1.15; }
+.topic-intro p:not(.eyebrow) { max-width: 56rem; margin: .5rem 0 1.2rem; color: var(--muted); }
+.topic-link { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; }
+.topic-indicators { display: grid; }
+.indicator-overview { min-width: 0; padding: clamp(1.25rem, 2.5vw, 2.1rem); }
+.indicator-overview + .indicator-overview { border-top: 1px solid var(--border); }
+.indicator-card h3 { margin: 0 0 .75rem; font-size: 1.25rem; line-height: 1.25; }
+.indicator-card p { margin: .45rem 0; }
+.indicator-card a { display: inline-block; margin-top: .5rem; }
+.indicator-card .indicator-value { font-size: clamp(1.7rem, 3.5vw, 2.3rem); line-height: 1.15; color: var(--teal); font-weight: 760; overflow-wrap: anywhere; }
+.indicator-unit, .data-freshness { color: var(--muted); font-size: .92rem; }
+.data-freshness { padding-left: .75rem; border-left: 3px solid var(--teal); }
+.trend-chart { margin: 1.5rem 0; }
+.trend-chart figcaption, .trend-chart caption { text-align: left; font-weight: 700; }
+.trend-chart svg { display: block; width: 100%; max-height: 15rem; margin: .5rem auto; overflow: visible; }
+.chart-axis { fill: none; stroke: var(--muted); stroke-width: .45; }
+.chart-line { fill: none; stroke: var(--teal); stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
+.chart-point { fill: var(--coral); stroke: var(--surface); stroke-width: .5; }
+.chart-tick { fill: var(--text); font-size: 3.7px; }
+.trend-chart [data-trend-summary] { margin: .7rem 0; color: var(--muted); }
+.trend-table-scroll { overflow-x: auto; }
+.trend-chart table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.trend-chart caption { padding: .5rem 0; }
+.trend-chart th, .trend-chart td { padding: .35rem .5rem; border-bottom: 1px solid var(--border); text-align: left; }
+.trend-chart td { text-align: right; }
+.why-it-matters { border-left: .3rem solid var(--coral); background: color-mix(in srgb, var(--gold) 11%, var(--surface)); padding: .8rem 1rem; border-radius: .25rem .6rem .6rem .25rem; }
+.why-it-matters h4 { font-size: 1rem; margin: 0 0 .4rem; }
+.why-it-matters p { margin: 0; }
+.source-details { margin-top: 1rem; border-top: 1px solid var(--border); }
+.source-details summary { padding: .8rem 0; font-weight: 700; color: var(--navy); }
+.source-panel { overflow-wrap: anywhere; }
+.source-panel h4 { margin: 0; font-size: 1rem; }
+.source-panel dl { margin: .6rem 0 1rem; }
+.source-panel dt { font-weight: 700; margin-top: .7rem; }
+.source-panel dd { margin: .15rem 0; }
+.source-record { border-top: 1px solid var(--border); padding: .5rem 0 1rem; }
+.source-record p { margin: .4rem 0; }
+.methodology-callout { border: 1px solid var(--border); border-left: .4rem solid var(--gold); border-radius: .6rem; background: var(--surface); padding: 1.5rem; margin-bottom: 4rem; }
+.methodology-callout h2 { margin: 0; font-size: 1.4rem; }
+.methodology-callout p { max-width: 58rem; }
+@media (min-width: 64rem) {
+  .topic-indicators { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .indicator-overview + .indicator-overview { border-top: 0; border-left: 1px solid var(--border); }
+}
