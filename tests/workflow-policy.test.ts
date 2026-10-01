@@ -114,12 +114,13 @@ function assertPagesPolicy(workflow: Workflow) {
     { uses: CHECKOUT, with: { "persist-credentials": false } },
     { uses: SETUP_NODE, with: { "node-version-file": ".nvmrc", cache: "npm" } },
     { run: "npm ci" },
-    { run: "npm run check" },
-    { run: "npm test" },
-    { run: "npm run build" },
+    { run: "npx playwright install --with-deps chromium" },
+    { run: "npm run verify" },
     { uses: CONFIGURE_PAGES }, // default enablement=false; no repository settings mutation
     { uses: UPLOAD_PAGES, with: { path: "dist/" } }
   ]);
+  expect(deploy).not.toHaveProperty("if");
+  expect(build).not.toHaveProperty("continue-on-error");
   expect(deploy.needs).toBe("build");
   expect(deploy.permissions).toEqual({ pages: "write", "id-token": "write" });
   expect(deploy.environment).toEqual({ name: "github-pages", url: "${{ steps.deployment.outputs.page_url }}" });
@@ -189,17 +190,35 @@ describe("unsafe workflow regressions", () => {
     ["build write access", (workflow) => { workflow.jobs.build.permissions!.pages = "write"; }],
     ["secret in build code", (workflow) => { workflow.jobs.build.steps[2].run = "echo ${{ secrets['TOKEN'] }}"; }],
     ["deployment from build", (workflow) => { workflow.jobs.build.steps.push({ uses: DEPLOY_PAGES }); }],
-    ["upload of repository source", (workflow) => { workflow.jobs.build.steps[7].with!.path = "."; }],
-    ["Pages settings enablement", (workflow) => { workflow.jobs.build.steps[6].with = { enablement: true }; }],
+    ["upload of repository source", (workflow) => { workflow.jobs.build.steps.find((step) => step.uses === UPLOAD_PAGES)!.with!.path = "."; }],
+    ["Pages settings enablement", (workflow) => { workflow.jobs.build.steps.find((step) => step.uses === CONFIGURE_PAGES)!.with = { enablement: true }; }],
     ["checkout in privileged deploy", (workflow) => { workflow.jobs.deploy.steps.unshift({ uses: CHECKOUT, with: { "persist-credentials": false } }); }],
     ["shell code in privileged deploy", (workflow) => { workflow.jobs.deploy.steps.push({ run: "npm run deploy" }); }],
     ["extra privileged deploy permissions", (workflow) => { workflow.jobs.deploy.permissions!.contents = "read"; }],
+    ["build missing browser installation", (workflow) => { workflow.jobs.build.steps = workflow.jobs.build.steps.filter((step) => step.run !== "npx playwright install --with-deps chromium"); }],
+    ["build missing full verification", (workflow) => { workflow.jobs.build.steps = workflow.jobs.build.steps.filter((step) => step.run !== "npm run verify"); }],
+    ["build using only static validation", (workflow) => { workflow.jobs.build.steps.find((step) => step.run === "npm run verify")!.run = "npm run check && npm test && npm run build"; }],
+    ["verification after artifact upload", (workflow) => { const index = workflow.jobs.build.steps.findIndex((step) => step.run === "npm run verify"); const [verify] = workflow.jobs.build.steps.splice(index, 1); workflow.jobs.build.steps.push(verify); }],
+    ["browser installation after verification", (workflow) => { const index = workflow.jobs.build.steps.findIndex((step) => step.run === "npx playwright install --with-deps chromium"); const [install] = workflow.jobs.build.steps.splice(index, 1); workflow.jobs.build.steps.push(install); }],
+    ["verification failure ignored", (workflow) => { Object.assign(workflow.jobs.build.steps.find((step) => step.run === "npm run verify")!, { "continue-on-error": true }); }],
+    ["deploy runs after failed build", (workflow) => { Object.assign(workflow.jobs.deploy, { if: "always()" }); }],
     ["deploy without validated build", (workflow) => { delete workflow.jobs.deploy.needs; }],
     ["privileged smoke", (workflow) => { workflow.jobs.smoke.permissions!["id-token"] = "write"; }],
     ["smoke pointed at a hardcoded host", (workflow) => { workflow.jobs.smoke.steps[4].env!.PLAYWRIGHT_BASE_URL = "https://example.com/"; }],
     ["smoke running the full suite", (workflow) => { workflow.jobs.smoke.steps[4].run = "npx playwright test"; }]
   ])("rejects %s", (_name, mutate) => {
     const workflow = readWorkflow("pages");
+    // Supply the intended gate before each single mutation, including on the old RED workflow.
+    workflow.jobs.build.steps = [
+      { uses: CHECKOUT, with: { "persist-credentials": false } },
+      { uses: SETUP_NODE, with: { "node-version-file": ".nvmrc", cache: "npm" } },
+      { run: "npm ci" },
+      { run: "npx playwright install --with-deps chromium" },
+      { run: "npm run verify" },
+      { uses: CONFIGURE_PAGES },
+      { uses: UPLOAD_PAGES, with: { path: "dist/" } }
+    ];
+    assertPagesPolicy(workflow);
     mutate(workflow);
     expect(() => assertPagesPolicy(workflow)).toThrow();
   });

@@ -29,8 +29,9 @@ export function formatPeriod(periodKey: string, referenceMonth: ReferenceMonth):
   const annualMatch = /^(\d{4})$/.exec(periodKey);
   const monthlyMatch = /^(\d{4})-(\d{2})$/.exec(periodKey);
 
-  if (referenceMonth === "annual" && annualMatch) {
-    return `Tahun ${annualMatch[1]}`;
+  if (referenceMonth === "annual") {
+    if (annualMatch) return `Tahun ${annualMatch[1]}`;
+    throw new RangeError(`Period ${periodKey} does not match annual.`);
   }
 
   const expectedMonth = referenceMonth === "august" ? "08" : "12";

@@ -68,3 +68,19 @@ describe("five-observation trend geometry", () => {
       .toThrow("Trend must contain exactly five observations.");
   });
 });
+
+// These existing guards must fail closed before constructing geometry.
+it.each([NaN, Infinity, -Infinity])("rejects nonfinite trend value %s", (value) => {
+  expect(() => createTrendGeometry(observations([1, 2, value, 4, 5])))
+    .toThrow("Trend values must be finite.");
+});
+it.each([
+  [0, 40, 4], [-1, 40, 4], [100, 0, 4], [100, -1, 4], [100, 40, -1],
+  [8, 40, 4], [100, 8, 4], [7, 40, 4], [100, 7, 4],
+  [NaN, 40, 4], [Infinity, 40, 4], [-Infinity, 40, 4],
+  [100, NaN, 4], [100, Infinity, 4], [100, -Infinity, 4],
+  [100, 40, NaN], [100, 40, Infinity], [100, 40, -Infinity]
+])("rejects unusable dimensions width=%s height=%s padding=%s", (width, height, padding) => {
+  expect(() => createTrendGeometry(observations([1, 2, 3, 4, 5]), width, height, padding))
+    .toThrow("Trend dimensions must leave space inside the view box.");
+});

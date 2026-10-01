@@ -74,3 +74,7 @@ describe("Indonesian indicator formatting", () => {
       .toBe("Pengeluaran per kapita yang disesuaikan bukan pendapatan, gaji, atau uang tunai yang diterima rumah tangga.");
   });
 });
+
+it("rejects a monthly key with the annual formatter reference", () => {
+  expect(() => formatPeriod("2031-12", "annual")).toThrow(RangeError);
+});

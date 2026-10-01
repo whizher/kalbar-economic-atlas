@@ -13,12 +13,24 @@ export const TopicSchema = z.enum(["harga", "pekerjaan", "kesejahteraan"]);
 export const IndicatorIdSchema = z.enum(INDICATOR_IDS);
 export const UnitSchema = z.enum(["percent", "thousand-rupiah-ppp-per-person-per-year"]);
 
+const PeriodKeySchema = z.string().regex(/^\d{4}(-(0[1-9]|1[0-2]))?$/);
+const monthLabels = [
+  "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+  "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+];
+
 export const ObservationSchema = z.object({
-  periodKey: z.string().regex(/^\d{4}(-\d{2})?$/),
+  periodKey: PeriodKeySchema,
   periodLabel: z.string().min(4),
   value: z.number(),
   status: z.enum(["final", "revised"])
-}).strict();
+}).strict().superRefine((observation, context) => {
+  const [year, month] = observation.periodKey.split("-");
+  const expectedLabel = month ? `${monthLabels[Number(month) - 1]} ${year}` : `Tahun ${year}`;
+  if (observation.periodLabel !== expectedLabel) {
+    context.addIssue({ code: "custom", path: ["periodLabel"], message: "Period label must agree with its calendar key." });
+  }
+});
 
 export const SourceSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
@@ -76,6 +88,17 @@ const expectedTopics: Record<(typeof INDICATOR_IDS)[number], z.infer<typeof Topi
   "adjusted-expenditure-per-capita": "kesejahteraan"
 };
 
+// The reviewed municipal contracts distinguish reporting frequency from the annual
+// trend's actual reference month (including March poverty with annual metadata).
+const indicatorContracts = {
+  "headline-inflation": { unit: "percent", frequency: "monthly-with-annual-trend", trendReference: "december", month: "12" },
+  "food-inflation": { unit: "percent", frequency: "monthly-with-annual-trend", trendReference: "december", month: "12" },
+  tpt: { unit: "percent", frequency: "annual", trendReference: "august", month: "08" },
+  tpak: { unit: "percent", frequency: "annual", trendReference: "august", month: "08" },
+  "poverty-rate": { unit: "percent", frequency: "annual", trendReference: "annual", month: "03" },
+  "adjusted-expenditure-per-capita": { unit: "thousand-rupiah-ppp-per-person-per-year", frequency: "annual", trendReference: "annual", month: null }
+} as const;
+
 const IndicatorShape = z.object({
   id: IndicatorIdSchema,
   topic: TopicSchema,
@@ -90,7 +113,7 @@ const IndicatorShape = z.object({
   latest: ObservationSchema,
   trend: z.array(ObservationSchema).length(5),
   movement: z.object({
-    comparedWith: z.string().regex(/^\d{4}(-\d{2})?$/),
+    comparedWith: PeriodKeySchema,
     comparisonValue: z.number(),
     delta: z.number(),
     unit: z.enum(["percentage-point", "thousand-rupiah-ppp-per-person-per-year"]),
@@ -108,6 +131,35 @@ const IndicatorShape = z.object({
 }).strict();
 
 export const IndicatorSchema = IndicatorShape.superRefine((indicator, context) => {
+  const contract = indicatorContracts[indicator.id];
+  const inflation = indicator.id === "headline-inflation" || indicator.id === "food-inflation";
+  for (const field of ["unit", "frequency", "trendReference"] as const) {
+    if (indicator[field] !== contract[field]) {
+      context.addIssue({ code: "custom", path: [field], message: `Indicator ${indicator.id} must use ${contract[field]}.` });
+    }
+  }
+  const matchesPeriod = (key: string, allowMonthly: boolean) => {
+    if (allowMonthly) return /^\d{4}-(0[1-9]|1[0-2])$/.test(key);
+    return contract.month === null ? /^\d{4}$/.test(key) : new RegExp(`^\\d{4}-${contract.month}$`).test(key);
+  };
+  for (const { key, path, allowMonthly } of [
+    { key: indicator.latest.periodKey, path: ["latest", "periodKey"], allowMonthly: inflation },
+    ...indicator.trend.map((point, index) => ({ key: point.periodKey, path: ["trend", index, "periodKey"], allowMonthly: false })),
+    { key: indicator.movement.comparedWith, path: ["movement", "comparedWith"], allowMonthly: inflation }
+  ]) {
+    if (!matchesPeriod(key, allowMonthly)) {
+      context.addIssue({ code: "custom", path, message: `Period must match the reviewed ${indicator.id} reference.` });
+    }
+  }
+  const overlappingLatest = indicator.trend.find((point) => point.periodKey === indicator.latest.periodKey);
+  if (overlappingLatest) {
+    for (const field of ["value", "status"] as const) {
+      if (indicator.latest[field] !== overlappingLatest[field]) {
+        context.addIssue({ code: "custom", path: ["latest", field], message: `Latest ${field} must match the same trend period.` });
+      }
+    }
+  }
+
   if (indicator.topic !== expectedTopics[indicator.id]) {
     context.addIssue({
       code: "custom",
@@ -181,11 +233,14 @@ export const IndicatorSchema = IndicatorShape.superRefine((indicator, context) =
     ...indicator.trend.map((observation, index) => ({ path: ["trend", index, "value"], value: observation.value })),
     { path: ["movement", "comparisonValue"], value: indicator.movement.comparisonValue }
   ];
-  const boundsMessage = indicator.unit === "percent"
-    ? "Percentage values must be between 0 and 100."
-    : "Adjusted expenditure values must be positive.";
+  // A year-on-year change from positive price-index levels is strictly above
+  // -100%; it is not a population share and has no generic 100% upper cap.
+  const expenditure = indicator.id === "adjusted-expenditure-per-capita";
+  const boundsMessage = inflation ? "Inflation rates must be greater than -100%."
+    : expenditure ? "Adjusted expenditure values must be positive."
+    : "Population shares must be between 0 and 100.";
   numericValues.forEach(({ path, value }) => {
-    const valid = indicator.unit === "percent" ? value >= 0 && value <= 100 : value > 0;
+    const valid = inflation ? value > -100 : expenditure ? value > 0 : value >= 0 && value <= 100;
     if (!valid) {
       context.addIssue({ code: "custom", path, message: boundsMessage });
     }
