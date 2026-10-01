@@ -6,7 +6,7 @@ body {
   color: var(--text);
   font: 1rem/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
-a { color: var(--navy); text-underline-offset: .18em; }
+a { display: inline-block; min-width: 44px; min-height: 44px; align-content: center; color: var(--navy); text-underline-offset: .18em; }
 a:hover { color: var(--teal); }
 :focus-visible { outline: .25rem solid var(--focus); outline-offset: .2rem; }
 button, summary { font: inherit; cursor: pointer; }

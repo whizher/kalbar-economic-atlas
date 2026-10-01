@@ -18,7 +18,7 @@ const titleId = `tren-${indicator.id}-judul`;
     <polyline class="chart-line" points={geometry.polylinePoints} />
     {indicator.trend.map((observation, index) => (
       <g>
-        <circle class="chart-point" cx={geometry.points[index].x} cy={geometry.points[index].y} r="1.9" aria-label={`${observation.periodLabel}: ${formatIndicatorValue(observation.value, indicator.unit, indicator.precision)}`} />
+        <circle class="chart-point" role="img" cx={geometry.points[index].x} cy={geometry.points[index].y} r="1.9" aria-label={`${observation.periodLabel}: ${formatIndicatorValue(observation.value, indicator.unit, indicator.precision)}`} />
         <text class="chart-tick" x={geometry.points[index].x} y="57" text-anchor="middle" aria-hidden="true">{observation.periodKey.slice(0, 4)}</text>
       </g>
     ))}
