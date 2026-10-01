@@ -57,8 +57,11 @@ function scanCss(content, path, files) {
     (_, hex, literal) => hex ? String.fromCodePoint(parseInt(hex, 16) || 0xfffd) : literal)
     .replace(/\/\*[\s\S]*?\*\//g, "");
   if (/@import\b|@namespace\b|\b(?:image-set|expression)\s*\(|-moz-binding\s*:/i.test(css)) fail(`Unsafe CSS resource in ${path}`);
-  for (const match of css.matchAll(/\burl\s*\(\s*(?:"([^"]*)"|'([^']*)'|([^)]*))\s*\)/gi)) {
-    if (!localResource((match[1] ?? match[2] ?? match[3]).trim(), path, files)) fail(`Unsafe CSS resource in ${path}`);
+  // Browsers may accept an EOF-terminated url(). Inspect every opener so a
+  // missing closing parenthesis cannot silently bypass the resource boundary.
+  for (const opener of css.matchAll(/\burl\s*\(/gi)) {
+    const match = /^url\s*\(\s*(?:"([^"]*)"|'([^']*)'|([^)]*))\s*\)/i.exec(css.slice(opener.index));
+    if (!match || !localResource((match[1] ?? match[2] ?? match[3]).trim(), path, files)) fail(`Unsafe CSS resource in ${path}`);
   }
 }
 

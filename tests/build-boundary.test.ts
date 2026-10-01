@@ -100,6 +100,9 @@ describe("built resource and privacy boundary", () => {
   });
   it.each([
     ["body{background:url(https://remote.test/a)}", "_astro/SiteShell-abc_123-XYZ.css"],
+    ["body{background-image:url(https://remote.test/EOF-probe", "_astro/SiteShell-abc_123-XYZ.css"],
+    ['<style>body{background-image:url(https://remote.test/EOF-probe</style>', "index.html"],
+    ['<p style="background-image:url(https://remote.test/EOF-probe">text</p>', "index.html"],
     ['@import "https://remote.test/a.css";', "_astro/SiteShell-abc_123-XYZ.css"],
     ['body{background:u\\72l(\\68ttps://remote.test/a)}', "_astro/SiteShell-abc_123-XYZ.css"],
     ['<style>body{background:url(//remote.test/a)}</style>', "index.html"],
