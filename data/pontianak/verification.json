@@ -1,0 +1,16 @@
+[
+  {
+    "id": "pontianak-v1-2026-08-27",
+    "verifiedOn": "2026-08-27",
+    "method": "two-pass-manual",
+    "passCount": 2,
+    "checks": [
+      "value",
+      "period",
+      "unit",
+      "geography",
+      "reference",
+      "comparability"
+    ]
+  }
+]

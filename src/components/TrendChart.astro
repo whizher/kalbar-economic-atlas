@@ -1,0 +1,38 @@
+---
+import { formatIndicatorValue } from "../data/format";
+import type { Indicator } from "../data/schema";
+import { createTrendGeometry } from "../data/trend";
+interface Props { indicator: Indicator }
+const { indicator } = Astro.props;
+const geometry = createTrendGeometry(indicator.trend, 100, 60, 10, {
+  unit: indicator.unit,
+  precision: indicator.precision
+});
+const titleId = `tren-${indicator.id}-judul`;
+---
+<figure class="trend-chart" data-trend-chart>
+  <figcaption>Tren lima pengamatan: {indicator.label}</figcaption>
+  <svg viewBox={geometry.viewBox} role="img" aria-labelledby={titleId} preserveAspectRatio="xMidYMid meet">
+    <title id={titleId}>Tren {indicator.label}, Kota Pontianak</title>
+    <path class="chart-axis" d="M10 10V50H90" />
+    <polyline class="chart-line" points={geometry.polylinePoints} />
+    {indicator.trend.map((observation, index) => (
+      <g>
+        <circle class="chart-point" role="img" cx={geometry.points[index].x} cy={geometry.points[index].y} r="1.9" aria-label={`${observation.periodLabel}: ${formatIndicatorValue(observation.value, indicator.unit, indicator.precision)}`} />
+        <text class="chart-tick" x={geometry.points[index].x} y="57" text-anchor="middle" aria-hidden="true">{observation.periodKey.slice(0, 4)}</text>
+      </g>
+    ))}
+  </svg>
+  <p data-trend-summary>{geometry.summary} Perbandingan {indicator.trend[0].periodLabel} hingga {indicator.trend[4].periodLabel}.</p>
+  <div class="trend-table-scroll">
+    <table>
+      <caption>Data tren lima pengamatan: {indicator.label}</caption>
+      <thead><tr><th scope="col">Periode</th><th scope="col">Nilai</th></tr></thead>
+      <tbody>
+        {indicator.trend.map((observation) => (
+          <tr><th scope="row">{observation.periodLabel}</th><td>{formatIndicatorValue(observation.value, indicator.unit, indicator.precision)}</td></tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</figure>

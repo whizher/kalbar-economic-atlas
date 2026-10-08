@@ -156,7 +156,7 @@ The executor must confirm these pins are still available before installation, bu
 | No live API, analytics, cookies, tracking, accounts, or remote project resource | Task 9; artifact scanner, request capture, and JavaScript-disabled checks |
 | Full data/unit/component/accessibility/build/workflow coverage | Tasks 2–12; focused red/green cycles followed by `npm run verify` |
 | Main-only Pages with separate build/deploy credentials | Task 12; immutable workflow policy tests and three-job deployment design |
-| Post-deployment route/theme/chart smoke check | Task 12; credential-free smoke job after `deploy` |
+| Post-deployment navigation/theme/chart/source/no-JavaScript smoke check | Task 12; credential-free smoke job after `deploy` |
 | License, data-use, privacy, attribution, contribution, and non-affiliation notices | Tasks 8 and 13; public pages plus repository guidance review |
 
 ## Task 1: Bootstrap the static Astro project
@@ -299,7 +299,7 @@ export default defineConfig({
 
 **Interfaces:** `AtlasDataSchema` consumes raw geography, source, verification, and indicator JSON. `loadAtlasData(root?)` returns one validated `AtlasData` object to pages and static JSON endpoints. Validation errors include the file and precise Zod path and stop the build.
 
-- [ ] Write `tests/data-schema.test.ts` with a valid in-memory TPAK fixture and failing cases for an unknown indicator ID, six trend observations, duplicate periods, a percentage outside `0..100`, incomplete attribution, a non-Pontianak geography code, and an unrecognized source availability state.
+- [ ] Write `tests/data-schema.test.ts` with a valid in-memory TPAK fixture and failing cases for an unknown indicator ID, six trend observations, duplicate periods, a bounded-share percentage outside `0..100`, incomplete attribution, a non-Pontianak geography code, and an unrecognized source availability state.
 - [ ] Run `npm test -- tests/data-schema.test.ts`. Expected: module-not-found failure for `src/data/schema.ts`.
 - [ ] Implement these public types and constants in `src/data/schema.ts`:
 
@@ -404,7 +404,7 @@ export const AtlasDataSchema = z.object({
 }).strict();
 ```
 
-- [ ] Refine `IndicatorSchema` so percentage units stay between 0 and 100, adjusted expenditure stays positive, trend periods are unique and ascending, movement units match indicator units, `movement.delta` equals `latest.value - comparisonValue` at the declared precision, any `comparedWith` period also present in the trend has the same value, `latest` is not older than the final trend point, and topic/indicator mappings match the approved six-item catalogue. Refine `AtlasDataSchema` so every `sourceId` and `verificationId` resolves, catalogue IDs are unique, all six verification checks are unique, and there are neither missing nor extra indicator IDs.
+- [ ] Refine `IndicatorSchema` with per-indicator unit/frequency/trend-reference contracts: inflation uses monthly latest observations and December year-on-year trends; employment uses August; poverty uses the reviewed March municipal reference with annual metadata; adjusted expenditure uses year-only annual observations. Validate legal calendar months and matching Indonesian period labels, including the movement comparison period. Require latest value/status agreement wherever its period also occurs in the trend, while allowing a newer non-December latest inflation month. Inflation rates must be finite and strictly greater than -100% with no generic 100% upper cap; bounded TPT/TPAK/P0 shares stay between 0 and 100; adjusted expenditure stays positive; trend periods are unique and ascending, movement units match indicator units, `movement.delta` equals `latest.value - comparisonValue` at the declared precision, any `comparedWith` period also present in the trend has the same value, `latest` is not older than the final trend point, and topic/indicator mappings match the approved six-item catalogue. Refine `AtlasDataSchema` so every `sourceId` and `verificationId` resolves, catalogue IDs are unique, all six verification checks are unique, and there are neither missing nor extra indicator IDs.
 - [ ] Export `AtlasDataSchema`, `AtlasData`, `Indicator`, `Observation`, `SourceRecord`, and `parseAtlasData(input)`.
 - [ ] Implement `loadAtlasData(root = process.cwd())` in `src/data/load.ts` using `node:fs/promises`. Sort the six indicator filenames before parsing, join the three Pontianak metadata files, reject missing or extra indicator files, and wrap errors as `Data validation failed at <path>: <message>`.
 - [ ] Implement `scripts/validate-data.mjs` as a thin call to `loadAtlasData()` that prints `Validated 6 Pontianak indicators and 30 trend observations.` only after successful parsing.
@@ -426,7 +426,7 @@ export const AtlasDataSchema = z.object({
 - Create: `data/pontianak/indicators/adjusted-expenditure-per-capita.json`
 - Create: `tests/data-snapshots.test.ts`
 
-**Interfaces:** Consumes only the six approved BPS source pages and their official document/table links. Produces the sole production data inputs. The browser never reads the BPS pages; later pages consume only `loadAtlasData()` output.
+**Interfaces:** Consumes only the twelve approved BPS source pages below and their official document/table links. Produces the sole production data inputs. The browser never reads the BPS pages; later pages consume only `loadAtlasData()` output.
 
 - [ ] Write `tests/data-snapshots.test.ts` first. Assert the exact six IDs, topic membership `2/2/2`, geography code `6171`, exactly five annual observations per indicator, latest-period labels, complete source joins, verification method `two-pass-manual`, and a nonempty comparability note for every series.
 - [ ] Run `npm test -- tests/data-snapshots.test.ts`. Expected: failure because the data directory is absent.
@@ -436,10 +436,16 @@ export const AtlasDataSchema = z.object({
 | Source ID | Direct catalogue URL | Required use |
 | --- | --- | --- |
 | `pontianak-dalam-angka-2026` | `https://pontianakkota.bps.go.id/id/publication/2026/02/27/d3d400239ad6cf7d959c2404/kota-pontianak-dalam-angka-2026.html` | Cross-check annual welfare and city scope |
+| `ihk-pontianak-2021` | `https://pontianakkota.bps.go.id/id/publication/2022/03/23/ba4797ae921daa1695bc088e/indeks-harga-konsumen-kota-pontianak-2021.html` | December 2021 food-group inflation |
+| `ihk-pontianak-2022` | `https://pontianakkota.bps.go.id/publication/2023/03/21/80edf8f05ad14ed95c009897/indeks-harga-konsumen-kota-pontianak-2022.html` | December 2022 food-group inflation |
+| `ihk-pontianak-2023` | `https://pontianakkota.bps.go.id/id/publication/2024/03/21/c2abcd79687989e691ea338e/indeks-harga-konsumen-kota-pontianak-2023.html` | December 2023 food-group inflation |
 | `ihk-pontianak-2025` | `https://pontianakkota.bps.go.id/id/publication/2026/06/05/21038398a2694540c254503d/indeks-harga-konsumen-kota-pontianak-2025.html` | Headline and food-group inflation |
+| `ketenagakerjaan-pontianak-2021` | `https://pontianakkota.bps.go.id/id/publication/2022/06/30/65a137725d28f9e212b449e8/labor-statistics-of-pontianak-municipality-2021.html` | August 2021 municipal TPT |
+| `ketenagakerjaan-pontianak-2022` | `https://pontianakkota.bps.go.id/id/publication/2023/06/27/d5ba993f14431cb08d4fa2de/statistik-ketenagakerjaan-kota-pontianak-2022.html` | August 2022 municipal TPT |
 | `ketenagakerjaan-pontianak-2025` | `https://pontianakkota.bps.go.id/id/publication/2026/06/26/5cb84d57097179ac93ca2e6a/statistik-ketenagakerjaan-kota-pontianak-2025.html` | August TPT and TPAK |
 | `poverty-p0-table` | `https://pontianakkota.bps.go.id/en/statistics-table/2/NTExIzI=/persentase-penduduk-miskin-p0-menurut-kabupaten-kota-di-provinsi-kalimantan.html` | Annual municipal poverty rate |
 | `adjusted-expenditure-table` | `https://pontianakkota.bps.go.id/id/statistics-table/2/MzM2IzI=/pengeluaran-per-kapita-yang-disesuaikan-ppp-menurut-kabupaten-kota-provinsi-kalimantan-barat.html` | Annual adjusted per-capita expenditure |
+| `ipm-pontianak-2025` | `https://pontianakkota.bps.go.id/id/pressrelease/2026/01/23/1067/indeks-pembangunan-manusia--ipm--kota-pontianak-pada-tahun-2025-mencapai-82-80-poin.html` | Reproducible 2021–2025 municipal adjusted-expenditure series |
 | `bps-terms` | `https://pontianakkota.bps.go.id/id/term-of-use` | Data-use boundary, not an indicator source |
 
 - [ ] Pass one for headline inflation: extract the latest verified all-items year-on-year value and five comparable December year-on-year rates, plus period, unit, table/page, base/classification notes, and revision state.
@@ -911,9 +917,9 @@ jobs:
       - run: npm run verify
 ```
 
-- [ ] Create `.github/workflows/pages.yml` with only `push` to `main` and `workflow_dispatch`; workflow-level `permissions: {}`; `concurrency.group: pages`; and `cancel-in-progress: false`. The `build` job gets `contents: read`, checks out without credentials, sets up Node with the reviewed v4 SHA, runs `npm ci`, `npm run check`, `npm test`, and `npm run build`, then configures Pages and uploads only `dist/` with the approved SHAs.
+- [ ] Create `.github/workflows/pages.yml` with only `push` to `main` and `workflow_dispatch`; workflow-level `permissions: {}`; `concurrency.group: pages`; and `cancel-in-progress: false`. The `build` job gets `contents: read`, checks out without credentials, sets up Node with the reviewed v4 SHA, runs `npm ci`, installs the approved Chromium with `npx playwright install --with-deps chromium`, and completes `npm run verify` (check/unit/build/browser) for this same candidate before configuring Pages and uploading only `dist/` with the approved SHAs.
 - [ ] Add a dependent `deploy` job with no checkout and no shell command. Grant only `pages: write` and `id-token: write`; set environment `github-pages`; expose `page_url` from the single `actions/deploy-pages@cd2ce8f...` step.
-- [ ] Create `e2e/smoke.spec.ts` to visit every base-relative entry in `PUBLIC_ROUTES`, assert each page heading, switch light → dark → light, confirm one chart/table pair per topic, and collect page errors. It must never use a leading-slash route, must use the configured base URL, and must contain no mutation.
+- [ ] Create `e2e/smoke.spec.ts` to visit every base-relative entry in `PUBLIC_ROUTES`, assert each page heading, switch light → dark → light, confirm one chart/table pair per topic, follow internal navigation while asserting the configured base path, verify source hrefs against the expected official catalogue without BPS downloads, load core headings/data/tables/navigation with JavaScript disabled, and collect page errors. It must never use a leading-slash route, must use the configured base URL, and must contain no mutation.
 - [ ] Add a dependent `smoke` job with `contents: read`, no deployment permissions, checkout/setup/npm/Chromium steps, and `PLAYWRIGHT_BASE_URL: ${{ needs.deploy.outputs.page_url }}`. Run only `e2e/smoke.spec.ts` on desktop Chromium.
 - [ ] Run `npm test -- tests/workflow-policy.test.ts`, then `npm run verify`. Expected: every workflow policy, unit, build, and browser test passes locally.
 - [ ] Commit: `ci: add hardened validation and Pages deployment`

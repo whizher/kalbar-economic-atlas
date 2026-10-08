@@ -1,0 +1,38 @@
+{
+  "id": "poverty-rate",
+  "topic": "kesejahteraan",
+  "geographyCode": "6171",
+  "label": "Persentase penduduk miskin (P0)",
+  "shortDefinition": "Persentase penduduk Kota Pontianak yang berada di bawah garis kemiskinan resmi.",
+  "officialDefinition": "Persentase penduduk dengan pengeluaran per kapita per bulan di bawah garis kemiskinan.",
+  "unit": "percent",
+  "frequency": "annual",
+  "trendReference": "annual",
+  "precision": 2,
+  "latest": {
+    "periodKey": "2025-03",
+    "periodLabel": "Maret 2025",
+    "value": 4.00,
+    "status": "final"
+  },
+  "trend": [
+    { "periodKey": "2021-03", "periodLabel": "Maret 2021", "value": 4.58, "status": "final" },
+    { "periodKey": "2022-03", "periodLabel": "Maret 2022", "value": 4.46, "status": "final" },
+    { "periodKey": "2023-03", "periodLabel": "Maret 2023", "value": 4.45, "status": "final" },
+    { "periodKey": "2024-03", "periodLabel": "Maret 2024", "value": 4.20, "status": "final" },
+    { "periodKey": "2025-03", "periodLabel": "Maret 2025", "value": 4.00, "status": "final" }
+  ],
+  "movement": {
+    "comparedWith": "2024-03",
+    "comparisonValue": 4.20,
+    "delta": -0.20,
+    "unit": "percentage-point",
+    "label": "Turun 0,20 poin persentase dibanding Maret 2024."
+  },
+  "whyItMatters": "Persentase penduduk miskin menunjukkan bagian penduduk di bawah garis kemiskinan resmi. Ukuran ini penting, tetapi tidak merangkum seluruh pengalaman kerentanan atau kesenjangan.",
+  "methodologyNote": "Estimasi tahunan Persentase Penduduk Miskin (P0) Kota Pontianak berdasarkan Susenas Maret.",
+  "comparabilityNote": "Kelima pengamatan menggunakan ukuran P0, cakupan Kota Pontianak, dan referensi Susenas Maret yang sama; tidak ada tanda sementara atau revisi pada nilai yang dikutip.",
+  "sourceIds": ["poverty-p0-table", "pontianak-dalam-angka-2026"],
+  "verificationId": "pontianak-v1-2026-08-27",
+  "revision": { "state": "current", "note": null }
+}

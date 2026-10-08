@@ -1,0 +1,45 @@
+---
+import type { Indicator, SourceRecord } from "../data/schema";
+import { TOPICS } from "../content/topics";
+import { withBase } from "../config/site";
+import IndicatorCard from "./IndicatorCard.astro";
+import TrendChart from "./TrendChart.astro";
+import WhyItMatters from "./WhyItMatters.astro";
+import SourcePanel from "./SourcePanel.astro";
+interface Props {
+  topic: keyof typeof TOPICS;
+  indicators: readonly Indicator[];
+  sources: readonly SourceRecord[];
+}
+const { topic, indicators, sources } = Astro.props;
+const expectedIds: Record<keyof typeof TOPICS, readonly string[]> = {
+  harga: ["headline-inflation", "food-inflation"],
+  pekerjaan: ["tpt", "tpak"],
+  kesejahteraan: ["poverty-rate", "adjusted-expenditure-per-capita"]
+};
+if (indicators.length !== 2 || indicators.some((indicator) => indicator.topic !== topic || !expectedIds[topic].includes(indicator.id)) || new Set(indicators.map((indicator) => indicator.id)).size !== 2) {
+  throw new Error(`Topic ${topic} requires exactly two distinct matching indicators.`);
+}
+const metadata = TOPICS[topic];
+---
+<section class="topic-summary" data-topic-summary aria-labelledby={`topik-${topic}`}>
+  <div class="topic-intro">
+    <p class="eyebrow">Kota Pontianak</p>
+    <h2 id={`topik-${topic}`}>{metadata.title}</h2>
+    <p>{metadata.summary}</p>
+    <a class="topic-link" href={withBase(metadata.href)}>Selengkapnya tentang {metadata.title}</a>
+  </div>
+  <div class="topic-indicators">
+    {indicators.map((indicator) => (
+      <section class="indicator-overview" aria-label={indicator.label}>
+        <IndicatorCard indicator={indicator} />
+        <TrendChart indicator={indicator} />
+        <WhyItMatters indicator={indicator} />
+        <details class="source-details">
+          <summary>Definisi, metode, dan sumber {indicator.label}</summary>
+          <SourcePanel indicator={indicator} sources={sources.filter((source) => indicator.sourceIds.includes(source.id))} />
+        </details>
+      </section>
+    ))}
+  </div>
+</section>

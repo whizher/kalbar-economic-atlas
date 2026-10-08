@@ -1,0 +1,74 @@
+---
+import ThemeToggle from "../components/ThemeToggle.astro";
+import { SITE, withBase } from "../config/site";
+import "../styles/tokens.css";
+import "../styles/global.css";
+import "../styles/components.css";
+
+interface Props {
+  title: string;
+  description: string;
+  currentPath?: string;
+}
+
+const { title, description, currentPath = "/" } = Astro.props;
+const pageTitle = title === SITE.title ? title : `${title} | ${SITE.title}`;
+---
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f7f3e8" />
+    <link rel="icon" type="image/svg+xml" href={withBase("/assets/favicon.svg")} />
+    <title>{pageTitle}</title>
+    <script is:inline>
+      try {
+        const choice = localStorage.getItem("atlas-theme");
+        if (choice === "light" || choice === "dark") document.documentElement.dataset.theme = choice;
+      } catch { /* The system color preference remains active. */ }
+    </script>
+    <script is:inline src={withBase("/assets/theme.js")} defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#konten-utama">Lewati ke konten utama</a>
+    <header class="site-header">
+      <div class="header-inner container">
+        <a class="site-brand" href={withBase("/")} aria-label="Atlas Ekonomi Pontianak — Beranda">
+          <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+            <path class="equator" d="M5 32h54" />
+            <path class="river" d="M13 5c24 16-9 27 14 36s18 9 24 18" />
+          </svg>
+          <span>Atlas Ekonomi <strong>Pontianak</strong></span>
+        </a>
+        <nav class="desktop-nav" aria-label="Navigasi utama">
+          {SITE.navigation.map(([label, path]) => (
+            <a href={withBase(path)} aria-current={currentPath === path ? "page" : undefined}>{label}</a>
+          ))}
+        </nav>
+        <div class="desktop-theme"><ThemeToggle /></div>
+        <details class="mobile-menu">
+          <summary>Menu navigasi</summary>
+          <nav aria-label="Navigasi utama seluler">
+            {SITE.navigation.map(([label, path]) => (
+              <a href={withBase(path)} aria-current={currentPath === path ? "page" : undefined}>{label}</a>
+            ))}
+          </nav>
+          <ThemeToggle />
+        </details>
+      </div>
+    </header>
+    <main id="konten-utama" tabindex="-1"><slot /></main>
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>Atlas Ekonomi Pontianak adalah proyek independen dan tidak berafiliasi dengan atau didukung oleh BPS.</p>
+        <p>Tanpa akun, cookie, atau pelacakan. Hanya pilihan tema yang disimpan di perangkat Anda.</p>
+        <nav aria-label="Tautan informasi">
+          <a href={withBase("/data-metodologi/")}>Data & Metodologi</a>
+          <a href={SITE.repository}>Repositori proyek</a>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>

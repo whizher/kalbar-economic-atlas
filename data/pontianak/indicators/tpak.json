@@ -1,0 +1,38 @@
+{
+  "id": "tpak",
+  "topic": "pekerjaan",
+  "geographyCode": "6171",
+  "label": "Tingkat Partisipasi Angkatan Kerja (TPAK)",
+  "shortDefinition": "Persentase penduduk usia kerja yang termasuk angkatan kerja.",
+  "officialDefinition": "Persentase angkatan kerja terhadap penduduk usia kerja.",
+  "unit": "percent",
+  "frequency": "annual",
+  "trendReference": "august",
+  "precision": 2,
+  "latest": {
+    "periodKey": "2025-08",
+    "periodLabel": "Agustus 2025",
+    "value": 61.77,
+    "status": "final"
+  },
+  "trend": [
+    { "periodKey": "2021-08", "periodLabel": "Agustus 2021", "value": 61.94, "status": "final" },
+    { "periodKey": "2022-08", "periodLabel": "Agustus 2022", "value": 64.82, "status": "final" },
+    { "periodKey": "2023-08", "periodLabel": "Agustus 2023", "value": 63.47, "status": "final" },
+    { "periodKey": "2024-08", "periodLabel": "Agustus 2024", "value": 64.53, "status": "final" },
+    { "periodKey": "2025-08", "periodLabel": "Agustus 2025", "value": 61.77, "status": "final" }
+  ],
+  "movement": {
+    "comparedWith": "2024-08",
+    "comparisonValue": 64.53,
+    "delta": -2.76,
+    "unit": "percentage-point",
+    "label": "Turun 2,76 poin persentase dibanding Agustus 2024."
+  },
+  "whyItMatters": "TPAK menunjukkan seberapa besar penduduk usia kerja yang bekerja atau aktif mencari kerja. Perubahannya dapat berkaitan dengan pendidikan, tanggung jawab rumah tangga, peluang kerja, dan faktor lain.",
+  "methodologyNote": "Estimasi Sakernas Agustus untuk Kota Pontianak. Rute unduhan resmi publikasi 2025 pernah menyajikan berkas PDF yang berbeda pada tingkat byte/checksum, tetapi kedua salinan memiliki 82 halaman serta gambar, nilai, periode, dan teks yang setara.",
+  "comparabilityNote": "Kelima pengamatan menggunakan estimasi Agustus tingkat Kota Pontianak; publikasi 2025 menjelaskan penggunaan bobot proyeksi penduduk SP2020.",
+  "sourceIds": ["ketenagakerjaan-pontianak-2025"],
+  "verificationId": "pontianak-v1-2026-08-27",
+  "revision": { "state": "current", "note": null }
+}

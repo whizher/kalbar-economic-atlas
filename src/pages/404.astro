@@ -1,0 +1,12 @@
+---
+import SiteShell from "../layouts/SiteShell.astro";
+import { withBase } from "../config/site";
+---
+<SiteShell title="Halaman tidak ditemukan" description="Halaman yang Anda cari tidak ditemukan di Atlas Ekonomi Pontianak.">
+  <section class="hero container">
+    <p class="eyebrow">404 · Alamat tidak tersedia</p>
+    <h1>Halaman tidak ditemukan</h1>
+    <p class="lead">Periksa kembali alamatnya, atau mulai dari ringkasan ekonomi Pontianak.</p>
+    <a href={withBase("/")}>Kembali ke Beranda</a>
+  </section>
+</SiteShell>

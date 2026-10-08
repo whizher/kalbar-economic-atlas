@@ -1,0 +1,43 @@
+---
+import SiteShell from "../layouts/SiteShell.astro";
+import { withBase } from "../config/site";
+import { loadAtlasData } from "../data/load";
+import IndicatorCard from "../components/IndicatorCard.astro";
+import TrendChart from "../components/TrendChart.astro";
+import WhyItMatters from "../components/WhyItMatters.astro";
+import SourcePanel from "../components/SourcePanel.astro";
+
+const atlas = await loadAtlasData();
+const ids = ["tpt", "tpak"];
+const indicators = ids.map((id) => atlas.indicators.find((indicator) => indicator.id === id));
+if (indicators.some((indicator) => !indicator)) throw new Error("Pekerjaan requires both verified indicators.");
+---
+<SiteShell title="Pekerjaan di Pontianak" description="TPT dan TPAK Kota Pontianak dari Sakernas Agustus." currentPath="/pekerjaan/">
+  <header class="hero container">
+    <nav aria-label="Jejak halaman"><a href={withBase("/")}>Beranda</a> / Pekerjaan</nav>
+    <p class="eyebrow">Pekerjaan · Kota Pontianak</p>
+    <h1>Pekerjaan di Pontianak</h1>
+    <p class="lead">Estimasi Sakernas Agustus untuk Kota Pontianak memakai periode rujukan yang sama pada setiap titik tren. TPT dan TPAK menjawab pertanyaan yang berbeda.</p>
+  </header>
+  <section class="container topic-summary" aria-labelledby="pekerjaan-indikator">
+    <div class="topic-intro">
+      <h2 id="pekerjaan-indikator">Dua ukuran pasar kerja</h2>
+      <p>Tingkat Pengangguran Terbuka (TPT) menghitung bagian angkatan kerja yang menganggur. Tingkat Partisipasi Angkatan Kerja (TPAK) menghitung bagian penduduk usia kerja yang masuk angkatan kerja. Perubahan partisipasi perlu dibaca bersama konteks, tanpa warna atau penilaian baik dan buruk otomatis.</p>
+    </div>
+    <div class="topic-indicators">
+      {indicators.map((indicator) => indicator && (
+        <section class="indicator-overview" data-topic-indicator aria-label={indicator.label}>
+          <IndicatorCard indicator={indicator} />
+          <TrendChart indicator={indicator} />
+          <WhyItMatters indicator={indicator} />
+          <SourcePanel indicator={indicator} sources={atlas.sources.filter((source) => indicator.sourceIds.includes(source.id))} />
+        </section>
+      ))}
+    </div>
+  </section>
+  <section class="container methodology-callout" aria-labelledby="pekerjaan-batasan">
+    <h2 id="pekerjaan-batasan">Metode dan batasan pembacaan</h2>
+    <p>Angka TPT dan TPAK tidak sepenuhnya menggambarkan kualitas pekerjaan, jam kerja, atau setengah pengangguran. Perubahan pada keduanya tidak serta-merta menjelaskan penyebabnya.</p>
+    <a href={withBase("/")}>Kembali ke ringkasan Pekerjaan di Beranda</a>
+  </section>
+</SiteShell>

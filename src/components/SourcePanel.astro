@@ -1,0 +1,21 @@
+---
+import type { Indicator, SourceRecord } from "../data/schema";
+interface Props { indicator: Indicator; sources: readonly SourceRecord[] }
+const { indicator, sources } = Astro.props;
+---
+<section class="source-panel" aria-label={`Definisi dan sumber ${indicator.label}`}>
+  <h4>Definisi dan sumber</h4>
+  <dl>
+    <dt>Definisi resmi</dt><dd>{indicator.officialDefinition}</dd>
+    <dt>Metodologi</dt><dd>{indicator.methodologyNote}</dd>
+    <dt>Keterbandingan</dt><dd>{indicator.comparabilityNote}</dd>
+  </dl>
+  {sources.map((source) => (
+    <div class="source-record">
+      <p><strong>{source.title}</strong> — {source.publisher}{source.author ? `; penulis: ${source.author}` : "; penulis tidak dicantumkan"}.</p>
+      <p>Diterbitkan: {source.publishedOn ?? "tanggal tidak dicantumkan"}; diakses: {source.accessedOn}.</p>
+      <p>Rujukan tepat: {source.reference}</p>
+      <a href={source.url}>Sumber resmi BPS: {source.title}</a>
+    </div>
+  ))}
+</section>

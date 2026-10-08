@@ -1,0 +1,32 @@
+{
+  "name": "kalbar-economic-atlas",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.20.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "data:validate": "node scripts/validate-data.mjs",
+    "build": "npm run data:validate && astro build && node scripts/validate-build.mjs",
+    "preview": "astro preview",
+    "test:e2e": "playwright test",
+    "verify": "npm run check && npm test && npm run build && npm run test:e2e"
+  },
+  "dependencies": {
+    "astro": "7.2.8",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.62.1",
+    "@types/node": "24.13.3",
+    "typescript": "6.0.3",
+    "vitest": "4.1.11"
+  }
+}
