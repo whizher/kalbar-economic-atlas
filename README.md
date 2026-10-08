@@ -1,5 +1,9 @@
 # Atlas Ekonomi Pontianak
 
+**Situs aktif: [Buka Atlas Ekonomi Pontianak](https://whizher.github.io/kalbar-economic-atlas/)**
+
+Atlas v1 telah dipublikasikan melalui GitHub Pages. Jelajahi enam indikator Kota Pontianak, tren 2021–2025, penjelasan, sumber resmi, dan unduhan JSON tanpa perlu memasang proyek secara lokal.
+
 ## Tujuan proyek
 
 Atlas ini menjelaskan harga, pekerjaan, dan kesejahteraan **Kota Pontianak** dalam Bahasa Indonesia dari ekstrak data resmi BPS yang telah diverifikasi. Beranda, tiga halaman topik, Data & Metodologi, serta Tentang menyediakan definisi, perubahan, tabel, grafik, sumber, dan unduhan JSON. Nama repositori `kalbar-economic-atlas` tidak memperluas cakupan v1 ke seluruh Kalimantan Barat.
@@ -23,7 +27,7 @@ Setiap indikator memiliki satu nilai terbaru dan tepat lima pengamatan tahunan y
 
 ## Referensi desain
 
-Mockup desain adalah referensi pengerjaan dan tidak dikirim sebagai bagian situs. Tampilan memakai CSS lokal, HTML semantik, dan grafik SVG dengan tabel setara. README ini belum memuat tangkapan layar produksi karena belum ada deployment publik yang diverifikasi.
+Mockup desain adalah referensi pengerjaan dan tidak dikirim sebagai bagian situs. Tampilan memakai CSS lokal, HTML semantik, dan grafik SVG dengan tabel setara. [Situs aktif](https://whizher.github.io/kalbar-economic-atlas/) menampilkan implementasi yang telah dipublikasikan, termasuk tema terang dan gelap.
 
 ## Pengembangan lokal
 
@@ -60,7 +64,7 @@ Data berasal dari snapshot yang masuk Git, divalidasi saat build, lalu diterbitk
 
 ## Aksesibilitas
 
-Proyek menargetkan WCAG 2.2 AA: navigasi keyboard dengan fokus terlihat, tautan lewati konten, gerakan berkurang, dua tema, serta grafik dengan ringkasan teks dan tabel setara. Informasi inti tetap terbaca tanpa JavaScript. Pengujian otomatis membantu menemukan masalah; pemeriksaan pembaca layar nyata, zoom UI browser asli, dan perangkat seluler fisik masih menjadi gerbang manual sebelum rilis publik.
+Proyek menargetkan WCAG 2.2 AA: navigasi keyboard dengan fokus terlihat, tautan lewati konten, gerakan berkurang, dua tema, serta grafik dengan ringkasan teks dan tabel setara. Informasi inti tetap terbaca tanpa JavaScript. Pengujian otomatis membantu menemukan masalah, tetapi tidak menggantikan pemeriksaan pembaca layar nyata, zoom UI browser asli, dan perangkat seluler fisik. Hasil dan keterbatasan pemeriksaan dicatat dalam bukti penerimaan rilis; publikasi situs bukan klaim sertifikasi WCAG.
 
 ## Privasi
 
@@ -80,6 +84,10 @@ Proyek ini independen, tidak berafiliasi dengan, disponsori, dioperasikan, atau 
 
 ## Status publikasi
 
-Cabang ini adalah kandidat rilis lokal; belum ada publikasi atau deployment publik yang diverifikasi. Verifikasi lokal kandidat ini menggunakan Node 24.20.0; pengujian browser memakai Chromium 153 dan server statis lokal di lingkungan verifikasi. Jalur perintah browser standar dan CI jarak jauh masih belum terverifikasi. Audit produksi lokal setelah pembaruan dependensi transitif `undici` ke 8.10.2 melaporkan nol kerentanan pada 1 Oktober 2026; audit perlu dijalankan kembali untuk kandidat rilis berikutnya. Pemeriksaan manual aksesibilitas di atas serta perilaku 404, header JSON, dan smoke test pada hosting sebenarnya masih belum diverifikasi.
+Atlas v1 telah dirilis di **[https://whizher.github.io/kalbar-economic-atlas/](https://whizher.github.io/kalbar-economic-atlas/)**. [PR #1](https://github.com/whizher/kalbar-economic-atlas/pull/1) telah digabungkan ke `main` pada 9 Oktober 2026 (WIB) dengan commit rilis `de619f7b92ecaad7854f94a2df384e539417dbbc`.
 
-Pembuatan repositori publik `whizher/kalbar-economic-atlas`, push, pull request, merge, pengaturan Pages, dan deployment memerlukan instruksi pemilik tersendiri. Setelah keputusan publikasi, validasi PR bersifat baca saja; workflow Pages membangun dari `main` dan memisahkan kredensial deployment. Rilis publik menunggu tinjauan seluruh cabang, gerbang runtime/manual, dan verifikasi situs yang benar-benar di-host.
+[Validasi GitHub-hosted untuk commit rilis](https://github.com/whizher/kalbar-economic-atlas/actions/runs/37822110488) dan [workflow Pages beserta smoke test hosting](https://github.com/whizher/kalbar-economic-atlas/actions/runs/37822110643) selesai dengan sukses. Jalur verifikasi menggunakan Node 24.20.0, Chromium bawaan Playwright, dan konfigurasi proyek yang normal. Pemeriksaan langsung situs aktif juga mengonfirmasi keenam halaman, respons 404 untuk route yang tidak ada, serta kedua unduhan JSON dengan header `application/json`.
+
+**Audit dependensi tidak bersih:** audit produksi terakhir masih melaporkan satu temuan **HIGH** pada `http-cache-semantics`. Pemilik menerima disposisi risiko terbatas untuk arsitektur situs statis ini; penerimaan tersebut bukan pernyataan bahwa paket aman atau sudah ditambal. Disposisi hanya berlaku tanpa SSR, sesi, cache respons bersama atau terautentikasi, penggunaan gambar jarak jauh Astro, maupun input build yang tidak tepercaya. Nilai ulang jika kondisi tersebut berubah; tinjauan rilis perbaikan upstream tetap menjadi pekerjaan pemeliharaan.
+
+Perubahan berikutnya diajukan melalui pull request dan verifikasi. Workflow Pages membangun dari `main` serta memisahkan kredensial deployment; penggabungan perubahan ke `main` akan memicu publikasi ulang. Bukti historis verifikasi dan keterbatasan penerimaan rilis tetap dipertahankan.
