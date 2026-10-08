@@ -10,7 +10,7 @@ const MAX_FILE_BYTES = 500 * 1024;
 const MAX_TOTAL_BYTES = 2 * 1024 * 1024;
 // Only the reviewed theme preference code may execute. A theme change requires
 // reviewing these fingerprints too; no approximate JS matching grants execution.
-const THEME_SCRIPT_HASH = "60b841086d378f5ab16253d063e638ddf9de1b4ede4eebabe4f0bb22cd9263db";
+const THEME_SCRIPT_HASH = "a5e44937f72b244158f21b14064048f9964d8b507eb5111e3316bb9e54e0863b";
 const THEME_INITIALIZER_HASH = "bb682fde527ce6c33c71fc62b1c202702d64b6d783a1b89789edb6e09a40e970";
 const fail = (message) => { throw new Error(message); };
 

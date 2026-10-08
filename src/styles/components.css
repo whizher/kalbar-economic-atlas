@@ -8,7 +8,9 @@
 .desktop-nav { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: .25rem; margin-left: auto; }
 .desktop-nav a, .mobile-menu nav a { display: inline-flex; align-items: center; padding: .55rem .7rem; border-radius: .4rem; font-weight: 600; text-decoration: none; }
 .desktop-nav a[aria-current], .mobile-menu a[aria-current] { background: var(--page); box-shadow: inset 0 -3px var(--teal); }
-.theme-toggle { border: 1px solid var(--border); border-radius: .5rem; color: var(--text); background: var(--raised); padding: .6rem .8rem; white-space: nowrap; }
+.theme-toggle { display: inline-flex; align-items: center; gap: .5rem; max-width: 100%; border: 1px solid var(--border); border-radius: .5rem; color: var(--text); background: var(--raised); padding: .6rem .8rem; text-align: start; }
+.theme-toggle-icon { display: block; width: 1.125rem; height: 1.125rem; flex: none; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.theme-toggle-icon[data-theme-icon-hidden] { display: none; }
 .theme-toggle:hover { border-color: var(--teal); }
 html:not(.theme-ready) .theme-toggle { display: none; }
 .mobile-menu { display: none; }
@@ -28,7 +30,7 @@ h1 { max-width: 19ch; font-size: clamp(2.4rem, 6vw, 5rem); line-height: 1.1; let
   .mobile-menu summary { display: flex; align-items: center; padding: .6rem .9rem; border: 1px solid var(--border); border-radius: .5rem; font-weight: 600; }
   .mobile-menu[open] { align-self: stretch; }
   .mobile-menu nav { display: grid; min-width: min(18rem, 80vw); padding-block: .5rem; }
-  .mobile-menu .theme-toggle { margin: .25rem .7rem .75rem; }
+.mobile-menu .theme-toggle { max-width: calc(100% - 1.4rem); margin: .25rem .7rem .75rem; }
   .header-inner { flex-wrap: wrap; }
   .mobile-menu[open] { width: 100%; margin-left: 0; order: 2; }
 }

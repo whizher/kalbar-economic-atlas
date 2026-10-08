@@ -19,7 +19,10 @@
     const dark = current() === "dark";
     document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
       button.setAttribute("aria-pressed", String(dark));
-      button.textContent = dark ? "Gunakan mode terang" : "Gunakan mode gelap";
+      button.querySelector("[data-theme-label]").textContent = dark ? "Gunakan mode terang" : "Gunakan mode gelap";
+      button.querySelectorAll("[data-theme-icon]").forEach((icon) => {
+        icon.toggleAttribute("data-theme-icon-hidden", icon.dataset.themeIcon !== (dark ? "sun" : "moon"));
+      });
     });
   };
 
