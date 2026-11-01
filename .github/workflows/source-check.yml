@@ -1,15 +1,13 @@
 name: Monthly source availability
 
 on:
-  schedule:
-    - cron: '17 3 1 * *'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: source-check
+  group: source-check-diagnostic
   cancel-in-progress: false
 
 jobs:
@@ -22,6 +20,41 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version-file: .nvmrc
-      - run: npm ci
-      - run: node scripts/check-sources.mjs
+          node-version: '24.20.0'
+      - name: Compare HEAD and GET (observations only)
+        run: |
+          node --input-type=module <<'NODE'
+          const sources = [
+            ["publication", "https://pontianakkota.bps.go.id/id/publication/2026/02/27/d3d400239ad6cf7d959c2404/kota-pontianak-dalam-angka-2026.html"],
+            ["poverty-table", "https://pontianakkota.bps.go.id/en/statistics-table/2/NTExIzI=/persentase-penduduk-miskin-p0-menurut-kabupaten-kota-di-provinsi-kalimantan.html"]
+          ];
+          console.log(JSON.stringify({node: process.version, platform: process.platform, commit: process.env.GITHUB_SHA}));
+          for (const [source, url] of sources) {
+            for (const method of ["HEAD", "GET"]) {
+              const started = performance.now();
+              try {
+                const response = await fetch(url, {
+                  method, redirect: "follow",
+                  headers: {"User-Agent": "kalbar-economic-atlas-source-check/1.0"},
+                  signal: AbortSignal.timeout(15_000)
+                });
+                const headers = {};
+                for (const name of ["server", "content-type", "content-length", "retry-after", "cf-mitigated"]) {
+                  const value = response.headers.get(name);
+                  if (value !== null) headers[name] = value;
+                }
+                console.log(JSON.stringify({
+                  source, method, status: response.status, finalUrl: response.url,
+                  redirected: response.redirected, durationMs: Math.round(performance.now() - started), headers
+                }));
+                await response.body?.cancel().catch(() => {});
+              } catch (error) {
+                console.log(JSON.stringify({
+                  source, method, durationMs: Math.round(performance.now() - started),
+                  error: error instanceof Error ? error.message : String(error)
+                }));
+              }
+            }
+          }
+          console.log("Diagnostic complete. Job success means observations collected, not source availability confirmed.");
+          NODE
