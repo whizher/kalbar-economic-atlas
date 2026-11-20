@@ -41,7 +41,7 @@ npm run dev
 
 Buka alamat lokal yang dicetak Astro dengan base path `/kalbar-economic-atlas/`. `npm run build` menghasilkan `dist/`; `npm run preview` melayani hasilnya secara lokal. Pratinjau lokal tidak menyatakan situs telah dipublikasikan.
 
-**Toolchain maintenance:** runtime proyek adalah Node 24.20.0, tetapi CI mempertahankan `actions/setup-node` v4 pada pin immutable `49933ea5288caeca8642d1e84afbd3f7d6820020` sampai lini Action Node 24 yang telah ditambal diverifikasi. Peningkatan Action harus mengubah workflow dan pengujian kebijakan terkait bersama-sama melalui tinjauan. Runtime Action dan versi Node yang dipasang untuk proyek adalah dua hal terpisah.
+**Toolchain maintenance:** CI memakai `actions/setup-node` v7.1.0 pada pin immutable `949feb2413d6458794dcd2491c4babbbce0c15c1`. Runtime Action adalah Node 24, dan versi Node untuk proyek tetap 24.20.0 sesuai `.nvmrc`. Tinjau perubahan pin bersama pengujian kebijakan workflow.
 
 ## Perintah verifikasi
 
