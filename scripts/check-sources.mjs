@@ -71,10 +71,18 @@ export async function checkSources(sources, fetchImpl = fetch) {
 export async function runSourceCheck({ root = process.cwd(), fetchImpl = fetch, log = console.log } = {}) {
   const atlas = await loadAtlasData(root);
   const results = await checkSources(atlas.sources, fetchImpl);
+  const hosts = new Set(results.map((result) => new URL(result.finalUrl).hostname));
+  const hostRefusedAll = results.length > 1 && hosts.size === 1 && results.every((result) => result.status === 403);
+  if (hostRefusedAll) {
+    const [host] = hosts;
+    log(`REVIEW ${host}: HTTP 403 for all ${results.length} source URLs. Check access in a browser.`);
+  }
   for (const result of results) {
     const observation = result.error ? `request error: ${result.error}` : `HTTP ${result.status}`;
     const redirect = result.redirected ? ` -> ${result.finalUrl}` : "";
-    log(`${result.reachable ? "REACHABLE" : "REVIEW"} ${result.id}: ${observation} ${result.url}${redirect}`);
+    let label = result.reachable ? "REACHABLE" : "REVIEW";
+    if (hostRefusedAll) label = "DETAIL";
+    log(`${label} ${result.id}: ${observation} ${result.url}${redirect}`);
   }
   if (results.some((result) => !result.reachable)) {
     log("Manual review required; no repository data was changed.");

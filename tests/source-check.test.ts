@@ -69,7 +69,7 @@ describe("read-only source availability", () => {
     expect(await checkSource(source, fetchStub([status]).fetchImpl)).toMatchObject({ reachable: true, status });
   });
 
-  it.each([404, 410, 429, 500])("reports HTTP %i for review without inferring withdrawal or retrying", async (status) => {
+  it.each([403, 404, 410, 429, 500])("reports HTTP %i for review without inferring withdrawal or retrying", async (status) => {
     const stub = fetchStub([status]);
     expect(await checkSource(source, stub.fetchImpl)).toMatchObject({ reachable: false, status, error: null });
     expect(stub.requests).toHaveLength(1);
@@ -146,6 +146,24 @@ describe("read-only source availability", () => {
     expect(lines.filter((line) => line.includes("https://"))).toHaveLength(expectedCount);
     if (status === 429) expect(lines).toContain("Manual review required; no repository data was changed.");
     expect(createHash("sha256").update(await readFile("data/pontianak/sources.json")).digest("hex")).toBe(before);
+  });
+
+  it.each([403, 404])("summarizes full-host refusal only when every response is 403 (first response %i)", async (status) => {
+    const atlas = await loadAtlasData();
+    const urls = new Set(atlas.sources.filter((entry) => entry.availability === "active").map((entry) => entry.url));
+    const lines: string[] = [];
+    const stub = fetchStub([status, ...Array(urls.size - 1).fill(403)]);
+    expect(await runSourceCheck({ fetchImpl: stub.fetchImpl, log: (line: string) => lines.push(line) })).toBe(1);
+    expect(lines.filter((line) => line.startsWith("REVIEW "))).toHaveLength(status === 403 ? 1 : urls.size);
+    if (status === 403) {
+      expect(lines[0]).toBe(`REVIEW pontianakkota.bps.go.id: HTTP 403 for all ${urls.size} source URLs. Check access in a browser.`);
+    } else {
+      expect(lines[0]).toMatch(/REVIEW .+: HTTP 404 https:\/\//);
+    }
+    for (const url of urls) {
+      expect(lines.filter((line) => line.endsWith(url))).toHaveLength(1);
+    }
+    expect(lines.at(-1)).toBe("Manual review required; no repository data was changed.");
   });
 
   it("refuses an invalid catalogue before sending any requests", async () => {
