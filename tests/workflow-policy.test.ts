@@ -3,7 +3,7 @@ import { createRequire } from "node:module";
 import { describe, expect, it } from "vitest";
 
 // Parse the workflow GitHub consumes, rather than matching YAML formatting.
-// js-yaml is already in the locked dependency tree; no new package is needed.
+// Use the explicitly pinned test dependency for workflow parsing.
 const { load } = createRequire(import.meta.url)("js-yaml") as {
   load: (yaml: string) => Workflow;
 };
